@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     projects: Project;
+    posts: Post;
+    'tree-nodes': TreeNode;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -79,6 +81,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    'tree-nodes': TreeNodesSelect<false> | TreeNodesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -175,6 +179,47 @@ export interface Project {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  slug: string;
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Nodos para construir árboles de archivos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tree-nodes".
+ */
+export interface TreeNode {
+  id: number;
+  name: string;
+  type: 'file' | 'folder';
+  isSelectable?: boolean | null;
+  children?: (number | TreeNode)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -191,6 +236,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'tree-nodes';
+        value: number | TreeNode;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -290,6 +343,29 @@ export interface ProjectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  richText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tree-nodes_select".
+ */
+export interface TreeNodesSelect<T extends boolean = true> {
+  name?: T;
+  type?: T;
+  isSelectable?: T;
+  children?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -319,6 +395,31 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FileTreeBlockType".
+ */
+export interface FileTreeBlockType {
+  /**
+   * Título opcional que aparecerá sobre el árbol
+   */
+  blockTitle?: string | null;
+  /**
+   * Ejemplo: "3" para que un archivo específico aparezca seleccionado
+   */
+  initialSelectedId?: string | null;
+  /**
+   * Las líneas verticales que conectan carpetas y archivos
+   */
+  showIndicator?: boolean | null;
+  /**
+   * Selecciona los archivos y carpetas que aparecerán en el nivel raíz del árbol.
+   */
+  rootNodes?: (number | TreeNode)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'fileTree';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
