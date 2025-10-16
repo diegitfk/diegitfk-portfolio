@@ -9,13 +9,16 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+// Collections Import
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Posts } from './collections/Posts'
 import { TreeNodes } from './collections/TreeNodes'
 
+// Blocks Import
 import { FileTreeBlock } from './blocks/FileTreeBlock/config'
+import { CodeBlock } from './blocks/CodeBlock/config'
 
 
 const filename = fileURLToPath(import.meta.url)
@@ -35,7 +38,7 @@ export default buildConfig({
       // This is incredibly powerful. You can re-use your Payload blocks
       // directly in the Lexical editor as follows:
       BlocksFeature({
-        blocks: [FileTreeBlock],
+        blocks: [FileTreeBlock, CodeBlock],
       }),
     ],
   }),

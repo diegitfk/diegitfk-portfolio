@@ -423,6 +423,34 @@ export interface FileTreeBlockType {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  /**
+   * Selecciona el lenguaje para el resaltado de sintaxis.
+   */
+  language:
+    | 'text'
+    | 'javascript'
+    | 'typescript'
+    | 'json'
+    | 'css'
+    | 'html'
+    | 'markdown'
+    | 'python'
+    | 'sql'
+    | 'yaml'
+    | 'bash';
+  /**
+   * Escribe o pega tu código aquí.
+   */
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'codeBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {

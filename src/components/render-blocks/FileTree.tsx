@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { File, Folder, Tree, type TreeViewElement } from '@/components/ui/file-tree'
 import type { FileTreeBlockType, TreeNode } from '@/payload-types'
 
@@ -45,9 +45,6 @@ export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
   showIndicator,
   rootNodes,
 }) => {
-  const [selectedId, setSelectedId] = useState<string | undefined>(
-    initialSelectedId ?? undefined
-  )
 
   // Obtener nodos populados
   const populatedRootNodes = useMemo(() => getPopulatedNodes(rootNodes), [rootNodes])
@@ -83,7 +80,6 @@ export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
           key={node.id}
           value={String(node.id)}
           isSelectable={node.isSelectable ?? true}
-          onClick={() => setSelectedId(String(node.id))}
         >
           <p>{node.name}</p>
         </File>
@@ -118,7 +114,7 @@ export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
         </div>
         <Tree
           className="flex-1 overflow-auto p-2"
-          initialSelectedId={selectedId}
+          initialSelectedId={initialSelectedId ?? undefined}
           initialExpandedItems={initialExpandedItems}
           elements={elements}
           indicator={showIndicator ?? true}

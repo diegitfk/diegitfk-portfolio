@@ -31,7 +31,7 @@ export const CodeBlock: Block = {
     },
     {
       name: 'code',
-      label: 'Código',
+      label: 'Block Code',
       type: 'code',
       required: true,
       admin: {
