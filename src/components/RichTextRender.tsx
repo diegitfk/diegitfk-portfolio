@@ -140,7 +140,7 @@ const serializeNodes = (nodes: RichTextNode[]): React.ReactNode => {
         if (fields?.blockType === 'codeBlock') {
           return (
             <div key={i} className="my-8">
-              <CodeBlockRenderer code={fields.code} language={fields.language} filename={fields.filename}/>
+              <CodeBlockRenderer code={fields.code} language={fields.language} filename={fields.filename} iconReference={fields.iconReference}/>
             </div>
           )
         }

@@ -10,7 +10,7 @@ export const metadata = {
 }
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (

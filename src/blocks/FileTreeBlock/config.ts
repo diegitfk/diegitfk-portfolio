@@ -9,14 +9,6 @@ export const FileTreeBlock: Block = {
   },
   fields: [
     {
-      name: 'blockTitle',
-      type: 'text',
-      label: 'Título del bloque',
-      admin: {
-        description: 'Título opcional que aparecerá sobre el árbol',
-      },
-    },
-    {
       name: 'initialSelectedId',
       type: 'text',
       label: 'ID del archivo seleccionado inicialmente',

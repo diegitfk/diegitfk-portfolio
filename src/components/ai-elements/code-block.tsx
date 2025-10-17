@@ -19,6 +19,9 @@ const CodeBlockContext = createContext<CodeBlockContextType>({
   code: "",
 });
 
+// Exportar el Context para uso externo
+export { CodeBlockContext };
+
 export type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
   code: string;
   language: string;

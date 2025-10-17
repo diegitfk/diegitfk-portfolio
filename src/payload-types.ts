@@ -402,10 +402,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface FileTreeBlockType {
   /**
-   * Título opcional que aparecerá sobre el árbol
-   */
-  blockTitle?: string | null;
-  /**
    * Ejemplo: "3" para que un archivo específico aparezca seleccionado
    */
   initialSelectedId?: string | null;
@@ -442,6 +438,35 @@ export interface CodeBlock {
     | 'yaml'
     | 'bash';
   filename?: string | null;
+  /**
+   * Selecciona la tecnología para mostrar el icono correspondiente.
+   */
+  iconReference?:
+    | (
+        | 'javascript'
+        | 'typescript'
+        | 'python'
+        | 'react'
+        | 'nextjs'
+        | 'astro'
+        | 'honojs'
+        | 'fastapi'
+        | 'mongodb'
+        | 'postgresql'
+        | 'mysql'
+        | 'redis'
+        | 'docker'
+        | 'docker-compose'
+        | 'kubernetes'
+        | 'terraform'
+        | 'pnpm'
+        | 'json'
+        | 'yaml'
+        | 'toml'
+        | 'bash'
+        | 'text'
+      )
+    | null;
   /**
    * Escribe o pega tu código aquí.
    */

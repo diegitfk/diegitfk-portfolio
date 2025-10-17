@@ -10,6 +10,31 @@ const nextConfig = {
       '.mjs': ['.mts', '.mjs'],
     }
 
+    // Configuración de SVGR para importar SVGs como componentes React
+    // Buscar la regla existente de archivos
+    const fileLoaderRule = webpackConfig.module.rules.find((rule) =>
+      rule.test?.test?.('.svg'),
+    )
+
+    webpackConfig.module.rules.push(
+      // Reutilizar la configuración existente de Next.js para SVGs importados con ?url
+      {
+        ...fileLoaderRule,
+        test: /\.svg$/i,
+        resourceQuery: /url/, // *.svg?url
+      },
+      // Convertir todos los demás imports de *.svg a componentes React
+      {
+        test: /\.svg$/i,
+        issuer: fileLoaderRule.issuer,
+        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // excluir si tiene ?url
+        use: ['@svgr/webpack'],
+      },
+    )
+
+    // Modificar la regla de archivos para ignorar archivos *.svg ya que tenemos reglas personalizadas
+    fileLoaderRule.exclude = /\.svg$/i
+
     return webpackConfig
   },
 }

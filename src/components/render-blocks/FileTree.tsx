@@ -40,7 +40,6 @@ const getAllFolderIds = (nodes: TreeNode[]): string[] => {
 }
 
 export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
-  blockTitle,
   initialSelectedId,
   showIndicator,
   rootNodes,
@@ -91,7 +90,6 @@ export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
   if (!populatedRootNodes || populatedRootNodes.length === 0) {
     return (
       <section className="my-12 w-full">
-        {blockTitle && <h2 className="mb-6 text-2xl font-bold">{blockTitle}</h2>}
         <div className="relative flex min-h-[200px] flex-col overflow-hidden rounded-lg border bg-background">
           <div className="border-b bg-muted/40 px-4 py-2">
             <p className="text-sm font-medium">Explorador de archivos</p>
@@ -106,13 +104,8 @@ export const FileTreeBlockComponent: React.FC<FileTreeBlockProps> = ({
 
   return (
     <>
-      {blockTitle && <h2 className="mb-6 text-2xl font-bold">{blockTitle}</h2>}
-
       <section className="flex flex-col items-center w-full">
         <div className="relative flex min-h-[200px] w-1/2 flex-col overflow-hidden rounded-lg border bg-background">
-          <div className="border-b bg-muted/40 px-4 py-2">
-            <p className="text-sm font-medium">Estructura de directorios</p>
-          </div>
           <Tree
             className="flex-1 overflow-auto p-2"
             initialSelectedId={initialSelectedId ?? undefined}
