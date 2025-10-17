@@ -30,6 +30,11 @@ export const CodeBlock: Block = {
       },
     },
     {
+      name  : "filename",
+      label : "Nombre del archivo",
+      type  : "text",
+    },
+    {
       name: 'code',
       label: 'Block Code',
       type: 'code',

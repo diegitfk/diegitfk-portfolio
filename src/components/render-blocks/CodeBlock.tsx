@@ -1,7 +1,7 @@
 import React from 'react';
-import { Highlight, themes } from 'prism-react-renderer';
+import {CodeBlock , CodeBlockCopyButton} from '@/components/ai-elements/code-block';
 
-// Define el tipo para las props, incluyendo los nuevos lenguajes
+// Define el tipo para las props
 type Language =
   | 'javascript'
   | 'typescript'
@@ -15,29 +15,27 @@ type Language =
   | 'yaml'
   | 'bash';
 
+
 interface CodeBlockProps {
   code: string;
   language: Language;
+  filename: string;
 }
 
-export const CodeBlockRenderer: React.FC<CodeBlockProps> = ({ code, language }) => {
+export const CodeBlockRenderer: React.FC<CodeBlockProps> = ({ code, language , filename }) => {
   return (
-    <Highlight
-      theme={themes.github} // O el tema que prefieras
-      code={code.trim()}
-      language={language}
-    >
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre className={`${className} text-xs`} style={{ ...style, padding: '20px', borderRadius: '8px', overflowX: 'auto', fontSize: '0.75rem', lineHeight: '1rem' }}>
-          {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line })}>
-              {line.map((token, key) => (
-                <span key={key} {...getTokenProps({ token })} />
-              ))}
-            </div>
-          ))}
-        </pre>
-      )}
-    </Highlight>
+    <section className='w-full rounded-md'>
+      <div className='flex flex-row justify-between'>
+        {/* Se debe controlar si no se entrega un filename, en este caso toma el lenguaje y renderiza el svg del lenguaje que se utiliza */}
+        {filename && (<span className='p-2'>
+          <h2 className='text-gray-500'>{filename}</h2>
+        </span>)}
+        <CodeBlockCopyButton
+            onCopy={() => console.log('Copied code to clipboard')}
+            onError={() => console.error('Failed to copy code to clipboard')}
+          />
+      </div>
+      <CodeBlock code={code} language={language} showLineNumbers={true}/>
+    </section>
   );
 };

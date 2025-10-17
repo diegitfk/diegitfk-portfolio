@@ -140,7 +140,7 @@ const serializeNodes = (nodes: RichTextNode[]): React.ReactNode => {
         if (fields?.blockType === 'codeBlock') {
           return (
             <div key={i} className="my-8">
-              <CodeBlockRenderer code={fields.code} language={fields.language} />
+              <CodeBlockRenderer code={fields.code} language={fields.language} filename={fields.filename}/>
             </div>
           )
         }
@@ -148,7 +148,7 @@ const serializeNodes = (nodes: RichTextNode[]): React.ReactNode => {
           // Casteamos `fields` al tipo esperado por `FileTreeBlockComponent`
           const fileTreeProps = fields as unknown as FileTreeBlockType
           return (
-            <div key={i} className="my-8">
+            <div key={i} className="my-8 w-full h-full">
               <FileTreeBlockComponent
                 blockTitle={fileTreeProps.blockTitle}
                 initialSelectedId={fileTreeProps.initialSelectedId}

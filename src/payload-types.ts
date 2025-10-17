@@ -441,6 +441,7 @@ export interface CodeBlock {
     | 'sql'
     | 'yaml'
     | 'bash';
+  filename?: string | null;
   /**
    * Escribe o pega tu código aquí.
    */
