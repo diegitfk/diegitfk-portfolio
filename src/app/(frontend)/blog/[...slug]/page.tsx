@@ -1,7 +1,8 @@
 import { clientSDK } from "@/utils/payloadClient";
 import { RichTextRender } from "@/components/RichTextRender";
+import Image from "next/image";
 
-export default async function PostPage({ params }: { params: { slug: string[] } }) { // Es bueno tipar slug como string[]
+export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) { // En Next.js 15, params es una Promise
     // 1. Unir el array en un solo string
     const {slug} = await params;
     const slugString = slug.join('/');    

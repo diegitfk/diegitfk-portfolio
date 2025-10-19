@@ -3,6 +3,24 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/api/media/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', // Permite cualquier dominio HTTPS (para producción)
+      },
+    ],
+    dangerouslyAllowSVG: true, // Permite SVGs en Next.js Image
+    contentDispositionType: 'attachment', // Seguridad para SVGs
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;", // CSP para SVGs
+    unoptimized: false, // Mantener optimización habilitada
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

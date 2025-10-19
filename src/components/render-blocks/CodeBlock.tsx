@@ -143,70 +143,93 @@ export const CodeBlockRenderer: React.FC<CodeBlockProps> = ({ code, language , f
 
   return (
     <CodeBlockContext.Provider value={{ code }}>
-      <section className='w-full rounded-md'>
+      <section className='w-full rounded-md shadow-sm border overflow-hidden'>
         {/* Header con icono, filename y botón de copiar */}
-        <div className='flex flex-row justify-between items-center p-2 border-b bg-muted/50'>
-          <span className='flex items-center gap-2'>
+        <div className='flex flex-row justify-between items-center px-3 py-2 sm:px-4 sm:py-2.5 md:px-4 md:py-3 border-b bg-muted/50 gap-2'>
+          <span className='flex items-center gap-2 min-w-0 flex-1'>
             {icon && (
-              <div className='w-4 h-4 flex items-center justify-center'>
+              <div className='w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center flex-shrink-0'>
                 {icon}
               </div>
             )}
             {filename && (
-              <h2 className='text-sm text-muted-foreground font-mono pt-1'>{filename}</h2>
+              <h2 className='text-xs sm:text-sm text-muted-foreground font-mono truncate'>
+                {filename}
+              </h2>
             )}
           </span>
-          <CodeBlockCopyButton
-            onCopy={() => console.log('Copied code to clipboard')}
-            onError={(error) => console.error('Failed to copy code to clipboard', error)}
-          />
+          <div className='flex-shrink-0'>
+            <CodeBlockCopyButton
+              onCopy={() => console.log('Copied code to clipboard')}
+              onError={(error) => console.error('Failed to copy code to clipboard', error)}
+            />
+          </div>
         </div>
         
         {/* Bloque de código */}
-        <div className="relative w-full overflow-hidden border bg-background text-foreground">
+        <div className="relative w-full overflow-x-auto border-t bg-background text-foreground">
+          {/* Light mode */}
           <SyntaxHighlighter
-            className="overflow-hidden dark:hidden"
+            className="overflow-x-auto dark:hidden !bg-transparent"
             codeTagProps={{
-              className: "font-mono text-sm",
+              className: "font-mono text-xs sm:text-sm",
             }}
             customStyle={{
               margin: 0,
-              padding: "1rem",
-              fontSize: "0.875rem",
-              background: "hsl(var(--background))",
+              padding: "0.75rem",
+              paddingLeft: "0.5rem",
+              paddingRight: "0.5rem",
+              fontSize: "0.75rem",
+              background: "transparent",
               color: "hsl(var(--foreground))",
             }}
             language={language}
             lineNumberStyle={{
               color: "hsl(var(--muted-foreground))",
-              paddingRight: "1rem",
-              minWidth: "2.5rem",
+              paddingRight: "0.75rem",
+              minWidth: "2rem",
+              fontSize: "0.7rem",
+              userSelect: "none",
             }}
             showLineNumbers={true}
             style={oneLight}
+            wrapLines={false}
+            lineProps={{
+              style: { wordBreak: 'break-all', whiteSpace: 'pre' }
+            }}
           >
             {code}
           </SyntaxHighlighter>
+          
+          {/* Dark mode */}
           <SyntaxHighlighter
-            className="hidden overflow-hidden dark:block"
+            className="hidden overflow-x-auto dark:block !bg-transparent"
             codeTagProps={{
-              className: "font-mono text-sm",
+              className: "font-mono text-xs sm:text-sm",
             }}
             customStyle={{
               margin: 0,
-              padding: "1rem",
-              fontSize: "0.875rem",
-              background: "hsl(var(--background))",
+              padding: "0.75rem",
+              paddingLeft: "0.5rem",
+              paddingRight: "0.5rem",
+              fontSize: "0.75rem",
+              background: "transparent",
               color: "hsl(var(--foreground))",
             }}
             language={language}
             lineNumberStyle={{
               color: "hsl(var(--muted-foreground))",
-              paddingRight: "1rem",
-              minWidth: "2.5rem",
+              paddingRight: "0.75rem",
+              minWidth: "2rem",
+              fontSize: "0.7rem",
+              userSelect: "none",
             }}
             showLineNumbers={true}
             style={oneDark}
+            wrapLines={false}
+            lineProps={{
+              style: { wordBreak: 'break-all', whiteSpace: 'pre' }
+            }}
           >
             {code}
           </SyntaxHighlighter>
