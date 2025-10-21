@@ -184,6 +184,8 @@ export interface Project {
 export interface Post {
   id: number;
   title: string;
+  description?: string | null;
+  'preview-image'?: (number | null) | Media;
   slug: string;
   richText?: {
     root: {
@@ -347,6 +349,8 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
+  'preview-image'?: T;
   slug?: T;
   richText?: T;
   updatedAt?: T;

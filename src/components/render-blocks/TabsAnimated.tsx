@@ -97,7 +97,7 @@ export const TabsAnimatedComponent: React.FC<TabsAnimatedProps> = ({ tabs }) => 
           }
         `
       }} />
-      <div className="h-auto min-h-[44rem] sm:min-h-[48rem] md:h-[56rem] lg:h-[64rem] xl:h-[68rem] [perspective:1000px] relative flex flex-col max-w-6xl mx-auto w-full px-2 sm:px-4 items-start justify-start mt-8 sm:mt-10 md:mt-12 mb-4 sm:mb-5 md:mb-6">
+      <div className="h-auto min-h-[44rem] sm:min-h-[48rem] md:min-h-[48rem] lg:min-h-[50rem] xl:min-h-[52rem] [perspective:1000px] relative flex flex-col max-w-6xl mx-auto w-full px-2 sm:px-4 items-start justify-start mt-8 sm:mt-10 md:mt-12 mb-4 sm:mb-5 md:mb-6">
         <Tabs 
           tabs={formattedTabs} 
           contentClassName="mt-14 sm:mt-16 md:mt-[4.5rem] lg:mt-20 xl:mt-[5.5rem]"

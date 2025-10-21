@@ -13,7 +13,7 @@ import {
    MySQL , Redis , Docker , Kubernetes , 
    Terraform  , PnpmLight
 } from "@ridemountainpig/svgl-react";
-import SettingIcon from "@/public/icons/settings-svgrepo-com.svg";
+import SettingIcon from "public/icons/settings-svgrepo-com.svg";
 
 interface IconsReference {
   reference : string;

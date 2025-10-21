@@ -1,5 +1,8 @@
 import { clientSDK } from "@/utils/payloadClient";
 import { RichTextRender } from "@/components/RichTextRender";
+import { TableOfContents } from "@/components/TableOfContents";
+import { BlogHeader } from "@/components/BlogHeader";
+import { extractHeadings } from "@/lib/headingUtils";
 import Image from "next/image";
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) { // En Next.js 15, params es una Promise
@@ -26,15 +29,26 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         return <p>Post no encontrado.</p>;
     }
 
+    // Extraer los headings para la tabla de contenidos
+    const headings = postPageData.richText ? extractHeadings(postPageData.richText) : [];
+
     return (
-        <main className="container mx-auto px-4 py-8">
-            <article className="prose dark:prose-invert max-w-4xl mx-auto">
-                {postPageData.richText ? (
-                    <RichTextRender content={postPageData.richText} />
-                ) : (
-                    <p>El contenido de este post no está disponible.</p>
-                )}
-            </article>
-        </main>
+        <>
+            {/* Tabla de contenidos */}
+            <TableOfContents headings={headings} />
+            
+            {/* Header del blog con título y autor */}
+            <BlogHeader title={postPageData.title} />
+            
+            <main className="container mx-auto px-4 py-8">
+                <article className="prose dark:prose-invert max-w-4xl mx-auto">
+                    {postPageData.richText ? (
+                        <RichTextRender content={postPageData.richText} />
+                    ) : (
+                        <p>El contenido de este post no está disponible.</p>
+                    )}
+                </article>
+            </main>
+        </>
     );
 }

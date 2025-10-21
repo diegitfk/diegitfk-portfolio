@@ -10,6 +10,7 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { toast } from "sonner";
 
 type CodeBlockContextType = {
   code: string;
@@ -120,18 +121,66 @@ export const CodeBlockCopyButton = ({
   const { code } = useContext(CodeBlockContext);
 
   const copyToClipboard = async () => {
-    if (typeof window === "undefined" || !navigator.clipboard.writeText) {
-      onError?.(new Error("Clipboard API not available"));
+    if (typeof window === "undefined") {
+      onError?.(new Error("Window not available"));
       return;
     }
 
+    // Método moderno: Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(code);
+        setIsCopied(true);
+        onCopy?.();
+        toast.success("¡Código copiado!", {
+          description: "El código se ha copiado al portapapeles",
+        });
+        setTimeout(() => setIsCopied(false), timeout);
+        return;
+      } catch (error) {
+        console.warn("Clipboard API failed, trying fallback method", error);
+        // Continuar con el fallback
+      }
+    }
+
+    // Método fallback para navegadores antiguos o móviles
     try {
-      await navigator.clipboard.writeText(code);
-      setIsCopied(true);
-      onCopy?.();
-      setTimeout(() => setIsCopied(false), timeout);
+      const textArea = document.createElement("textarea");
+      textArea.value = code;
+      textArea.style.position = "fixed";
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.width = "2em";
+      textArea.style.height = "2em";
+      textArea.style.padding = "0";
+      textArea.style.border = "none";
+      textArea.style.outline = "none";
+      textArea.style.boxShadow = "none";
+      textArea.style.background = "transparent";
+      textArea.style.opacity = "0";
+      
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textArea);
+      
+      if (successful) {
+        setIsCopied(true);
+        onCopy?.();
+        toast.success("¡Código copiado!", {
+          description: "El código se ha copiado al portapapeles",
+        });
+        setTimeout(() => setIsCopied(false), timeout);
+      } else {
+        throw new Error("execCommand('copy') failed");
+      }
     } catch (error) {
       onError?.(error as Error);
+      toast.error("Error al copiar", {
+        description: "No se pudo copiar el código. Por favor, cópialo manualmente.",
+      });
     }
   };
 

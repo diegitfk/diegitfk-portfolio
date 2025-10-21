@@ -10,6 +10,7 @@ import { TabsAnimatedComponent } from './render-blocks/TabsAnimated'
 import { AnimatedSection, AnimatedBlock, AnimatedListItem } from './AnimatedSection'
 import type { FileTreeBlockType, AnimatedTabsBlock } from '../payload-types' // Asumiendo que exportas este tipo desde FileTree.tsx
 import { JSX } from 'react'
+import { generateHeadingId } from '@/lib/headingUtils'
 // --- Tipos para el Rich Text de PayloadCMS ---
 
 type RichTextNode = {
@@ -108,10 +109,16 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
             h5: "scroll-m-20 text-base sm:text-lg md:text-xl font-semibold tracking-tight mt-4 sm:mt-5 md:mt-6 mb-2 sm:mb-3",
             h6: "scroll-m-20 text-sm sm:text-base md:text-lg font-semibold tracking-tight mt-3 sm:mt-4 mb-2",
         }
+        // Generar ID para el heading
+        const headingText = node.children
+          ?.filter((child: any) => child.type === 'text')
+          .map((child: any) => child.text)
+          .join('') || ''
+        const headingId = generateHeadingId(headingText)
         const headingDelay = getNextDelay()
         return (
           <AnimatedSection key={i} delay={headingDelay}>
-            <Tag className={tagClasses[node.tag] || ''}>{serializeText(node.children || [], true)}</Tag>
+            <Tag id={headingId} className={tagClasses[node.tag] || ''}>{serializeText(node.children || [], true)}</Tag>
           </AnimatedSection>
         )
 

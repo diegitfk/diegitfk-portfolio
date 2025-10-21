@@ -16,6 +16,19 @@ export const Posts: CollectionConfig = {
       label: 'Título del post',
     },
     {
+      name : "description",
+      type : "text",
+      required : false,
+      label : "Descripción del post"
+    },
+    {
+      name : "preview-image",
+      type : "upload",
+      relationTo : "media",
+      required : false,
+      label : "Imagen previa"
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,
