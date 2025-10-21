@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { CodeBlockRenderer } from './render-blocks/CodeBlock' 
 import { FileTreeBlockComponent } from './render-blocks/FileTree'
 import { TabsAnimatedComponent } from './render-blocks/TabsAnimated'
+import { MermaidDiagram } from './render-blocks/Mermaid'
 import { AnimatedSection, AnimatedBlock, AnimatedListItem } from './AnimatedSection'
 import type { FileTreeBlockType, AnimatedTabsBlock } from '../payload-types' // Asumiendo que exportas este tipo desde FileTree.tsx
 import { JSX } from 'react'
@@ -237,6 +238,15 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
                   tabs={animatedTabsProps.tabs}
                   blockType={animatedTabsProps.blockType}
                 />
+              </div>
+            </AnimatedBlock>
+          )
+        }
+        if (fields?.blockType === 'mermaid-block') {
+          return (
+            <AnimatedBlock key={i} delay={blockDelay}>
+              <div className="my-8 w-full">
+                <MermaidDiagram code={fields.code} />
               </div>
             </AnimatedBlock>
           )

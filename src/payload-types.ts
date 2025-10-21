@@ -499,6 +499,16 @@ export interface AnimatedTabsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MermaidBlock".
+ */
+export interface MermaidBlock {
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mermaid-block';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {

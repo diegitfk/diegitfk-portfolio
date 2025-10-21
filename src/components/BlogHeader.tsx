@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { LinkedIn, Gmail, WhatsApp, XLight, XDark } from '@ridemountainpig/svgl-react'
 import { useTheme } from 'next-themes'
+import { cn } from '@/lib/utils'
 
 interface BlogHeaderProps {
   title: string
@@ -42,12 +43,25 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
 
   return (
     <motion.header 
-      className="relative w-full bg-white dark:bg-black text-black dark:text-white py-16 sm:py-20 md:py-24 lg:py-28 border-b border-gray-200 dark:border-gray-800"
+      className="relative w-full bg-white dark:bg-black text-black dark:text-white py-16 sm:py-20 md:py-24 lg:py-28 border-b border-gray-200 dark:border-gray-800 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Background de puntos */}
+      <div
+        className={cn(
+          "absolute inset-0",
+          "[background-size:20px_20px]",
+          "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
+          "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
+        )}
+      />
+      
+      {/* Gradiente radial para efecto fade */}
+      <div className="pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Título del artículo */}
           <motion.h1 
