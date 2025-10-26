@@ -43,25 +43,26 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
 
   return (
     <motion.header 
-      className="relative w-full bg-white dark:bg-black text-black dark:text-white py-16 sm:py-20 md:py-24 lg:py-28 border-b border-gray-200 dark:border-gray-800 overflow-hidden"
+      className="relative w-full min-h-screen bg-white dark:bg-gray-950 text-black dark:text-white border-b border-gray-200 dark:border-gray-800 overflow-hidden flex items-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Background de puntos */}
+      {/* Background de puntos verdes tipo Supabase */}
       <div
         className={cn(
           "absolute inset-0",
-          "[background-size:20px_20px]",
-          "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
-          "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
+          "[background-size:24px_24px]",
+          "[background-image:radial-gradient(circle,#3ECF8E_1.5px,transparent_1.5px)]",
+          "dark:[background-image:radial-gradient(circle,#3ECF8E_1.5px,transparent_1.5px)]",
         )}
+        style={{ opacity: 1 }}
       />
       
       {/* Gradiente radial para efecto fade */}
-      <div className="pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
+      <div className="pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-gray-950" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 w-full">
         <div className="max-w-4xl mx-auto">
           {/* Título del artículo */}
           <motion.h1 
