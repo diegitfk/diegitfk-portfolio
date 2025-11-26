@@ -13,6 +13,18 @@ const nextConfig = {
         pathname: '/api/media/**',
       },
       {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '',
+        pathname: '/api/media/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '::1',
+        port: '',
+        pathname: '/api/media/**',
+      },
+      {
         protocol: 'https',
         hostname: '**', // Permite cualquier dominio HTTPS (para producción)
       },
