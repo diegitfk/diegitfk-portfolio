@@ -34,6 +34,15 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;", // CSP para SVGs
     unoptimized: false, // Mantener optimización habilitada
   },
+  // Configuración de Turbopack (Next.js 15+)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
@@ -47,21 +56,26 @@ const nextConfig = {
       rule.test?.test?.('.svg'),
     )
 
-    webpackConfig.module.rules.push(
-      // Reutilizar la configuración existente de Next.js para SVGs importados con ?url
-      {
-        ...fileLoaderRule,
-        test: /\.svg$/i,
-        resourceQuery: /url/, // *.svg?url
-      },
-      // Convertir todos los demás imports de *.svg a componentes React
-      {
-        test: /\.svg$/i,
-        issuer: fileLoaderRule.issuer,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // excluir si tiene ?url
-        use: ['@svgr/webpack'],
-      },
-    )
+    webpackConfig.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            svgo: true,
+            titleProp: true,
+            ref: true,
+          },
+        },
+      ],
+    });
+    
+    webpackConfig.module.rules.push({
+      test: /\.svg$/,
+      type: "asset/resource",
+      resourceQuery: /url/, // permite usar icon.svg?url
+    });
 
     // Modificar la regla de archivos para ignorar archivos *.svg ya que tenemos reglas personalizadas
     fileLoaderRule.exclude = /\.svg$/i
