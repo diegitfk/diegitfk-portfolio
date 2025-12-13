@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface NavItem {
   label: string;
@@ -30,6 +31,18 @@ export function BlurNavbar({
   ctaHref = "#contact",
 }: BlurNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Función para determinar si un enlace está activo
+  const isActive = (href: string) => {
+    if (href === "#") {
+      return pathname === "/";
+    }
+    if (href.startsWith("#")) {
+      return false; // No marcar como activo los anchors internos
+    }
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   return (
     <>
@@ -67,14 +80,22 @@ export function BlurNavbar({
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-gray-400 hover:text-white text-sm font-medium transition-colors"
+                  className={`text-sm font-medium transition-colors relative pb-1 ${
+                    isActive(item.href)
+                      ? "text-white border-b-2 border-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
                 >
                   {item.label}
                 </Link>
               ))}
               <Link
                 href={ctaHref}
-                className="text-gray-400 hover:text-white text-sm font-medium transition-colors"
+                className={`text-sm font-medium transition-colors relative pb-1 ${
+                  isActive(ctaHref)
+                    ? "text-white border-b-2 border-white"
+                    : "text-gray-400 hover:text-white"
+                }`}
               >
                 {ctaLabel}
               </Link>
@@ -107,7 +128,11 @@ export function BlurNavbar({
                   key={item.label}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-gray-300 hover:text-white text-xl font-medium transition-colors"
+                  className={`text-xl font-medium transition-colors relative pb-2 ${
+                    isActive(item.href)
+                      ? "text-white border-b-2 border-white"
+                      : "text-gray-300 hover:text-white"
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -115,7 +140,11 @@ export function BlurNavbar({
               <Link
                 href={ctaHref}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="mt-4 px-8 py-3 bg-white text-black text-base font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                className={`mt-4 px-8 py-3 text-base font-medium rounded-lg transition-colors ${
+                  isActive(ctaHref)
+                    ? "bg-white text-black border-b-2 border-white"
+                    : "bg-white text-black hover:bg-gray-200"
+                }`}
               >
                 {ctaLabel}
               </Link>
