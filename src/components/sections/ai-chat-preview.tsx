@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Bot, ThumbsUp, ThumbsDown, Copy, MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Reasoning, ReasoningTrigger, ReasoningContent } from "@/components/ai-elements/reasoning";
@@ -69,6 +69,21 @@ export function AIChatPreview() {
   const [isTyping, setIsTyping] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, amount: 0.3 });
+  const wasInViewRef = useRef(false);
+
+  // Reset conversation when entering viewport
+  useEffect(() => {
+    if (isInView && !wasInViewRef.current) {
+      // Entering viewport - restart conversation
+      setVisibleMessages([]);
+      setCurrentIndex(0);
+      setIsTyping(false);
+      setStreamingMessageId(null);
+    }
+    wasInViewRef.current = isInView;
+  }, [isInView]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -82,7 +97,7 @@ export function AIChatPreview() {
 
   // Streaming effect for assistant messages
   useEffect(() => {
-    if (!streamingMessageId) return;
+    if (!streamingMessageId || !isInView) return;
 
     const messageIndex = visibleMessages.findIndex(m => m.id === streamingMessageId);
     if (messageIndex === -1) return;
@@ -125,10 +140,12 @@ export function AIChatPreview() {
     setVisibleMessages(prev => prev.map(m => 
       m.id === streamingMessageId ? { ...m, isComplete: true } : m
     ));
-  }, [streamingMessageId, visibleMessages]);
+  }, [streamingMessageId, visibleMessages, isInView]);
 
-  // Main conversation flow
+  // Main conversation flow - only runs when in view
   useEffect(() => {
+    if (!isInView) return;
+
     if (currentIndex >= demoConversation.length) {
       const resetTimer = setTimeout(() => {
         setVisibleMessages([]);
@@ -167,10 +184,11 @@ export function AIChatPreview() {
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [currentIndex]);
+  }, [currentIndex, isInView]);
 
   return (
     <div
+      ref={containerRef}
       className="relative w-full h-[400px] sm:h-[450px] md:h-[500px] flex items-center justify-center"
       style={{ perspective: "1500px", perspectiveOrigin: "center center" }}
     >

@@ -1,120 +1,160 @@
-import { useState } from "react";
-import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
-import ReasoningSection from "@/components/sections/thinking-component";
-import { SplitText } from "@/components/ui/text-generate-effect";
-import { TechScrollSlider } from "@/components/sections/tech-scroll-slider";
-import Image from "next/image";
 import { motion, Variants } from "framer-motion";
+import { Github, Linkedin, Download, ArrowUpRight } from "lucide-react";
+import LightRays from "@/components/LightRays";
 
 export function HeroSection() {
-    const [isThinkingStreaming, setIsThinkingStreaming] = useState(true)
-    const words = `Soy Diego Cancino, ingeniero de sistemas con enfoque integral en Backend, Frontend y agentes de IA. Trabajo con Python, JavaScript y TypeScript para 
-    crear soluciones escalables, desde microservicios con Docker hasta aplicaciones modernas en Next.js. Mis proyectos combinan arquitectura sólida, tecnologías como LangChain/Agno y diseño 
-    orientado a sistemas eficientes e innovadores.
-    `;
-
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.2,
-                delayChildren: 0.1
+                staggerChildren: 0.15,
+                delayChildren: 0.3
             }
         }
     };
 
     const itemVariants: Variants = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: 30 },
         visible: {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.5,
+                duration: 0.6,
                 ease: "easeOut"
             }
         }
     };
 
-    const staggerItemVariants: Variants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: "easeOut",
-                staggerChildren: 0.2
-            }
-        }
-    };
-
-
-
     return (
-        <motion.section 
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 bg-black min-h-screen"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-        >
-            <motion.div 
-                className="min-h-[40vh] sm:min-h-[50vh] lg:min-h-screen flex flex-col items-center justify-center bg-black order-2 lg:order-1 relative py-8 lg:py-0"
-                variants={itemVariants}
+        <section className="relative min-h-screen w-full bg-black overflow-hidden">
+            {/* LightRays Background */}
+            <div className="absolute inset-0 w-full h-full z-0">
+                <LightRays
+                    raysOrigin="top-center"
+                    raysColor="#ffffff"
+                    raysSpeed={0.5}
+                    lightSpread={1.5}
+                    rayLength={2.5}
+                    pulsating={true}
+                    fadeDistance={1.2}
+                    saturation={0.3}
+                    followMouse={true}
+                    mouseInfluence={0.15}
+                    noiseAmount={0.05}
+                    distortion={0.1}
+                />
+            </div>
+
+            {/* Content */}
+            <motion.div
+                className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
             >
-                <div className="relative z-10 w-full max-w-[280px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[380px] xl:max-w-[420px] mx-auto">
-                    <Image 
-                        src="/images/personal-hero-section.png" 
-                        alt="Hero" 
-                        width={500} 
-                        height={500} 
-                        priority 
-                        className="w-full h-auto object-contain"
-                    />
-                </div>
-                <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0">
-                    <TechScrollSlider />
-                </div>
-            </motion.div>
-            <motion.div 
-                className="flex flex-col justify-start pt-36 sm:pt-40 lg:pt-32 xl:pt-40 px-4 sm:px-6 lg:px-8 xl:px-12 order-1 lg:order-2"
-                variants={staggerItemVariants}
-            >
-                <motion.div 
-                    className="flex flex-row items-center justify-center lg:justify-start"
-                    variants={itemVariants}
-                >
-                    <LayoutTextFlip text='Desarrollador ' words={[
-                    "Backend",
-                    "AI Agents",
-                    "Frontend",
-                    ]} />
+                {/* Badge */}
+                <motion.div variants={itemVariants} className="mb-6">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-wider text-gray-400 border border-gray-700/50 rounded-full backdrop-blur-sm bg-black/30">
+                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        Available for work
+                    </span>
                 </motion.div>
-                <motion.div 
-                    className="flex flex-col items-center lg:items-start mt-6 sm:mt-8"
+
+                {/* Main Title */}
+                <motion.h1
                     variants={itemVariants}
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center text-white leading-tight mb-4"
                 >
-                    <div className="p-3 sm:p-4 w-full lg:w-11/12 xl:w-full">
-                        <ReasoningSection isStreaming={isThinkingStreaming} setIsStreaming={setIsThinkingStreaming} />
-                    </div>
-                    {!isThinkingStreaming && (
-                        <motion.div 
-                            className="w-full lg:w-11/12 xl:w-full"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.5 }}
+                    Diego Cancino
+                </motion.h1>
+
+                {/* Subtitle */}
+                <motion.p
+                    variants={itemVariants}
+                    className="text-lg sm:text-xl md:text-2xl text-gray-400 text-center mb-8 max-w-2xl"
+                >
+                    Full Stack Developer & AI Engineer
+                </motion.p>
+
+                {/* Description */}
+                <motion.p
+                    variants={itemVariants}
+                    className="text-sm sm:text-base text-gray-500 text-center mb-12 max-w-xl leading-relaxed"
+                >
+                    Building scalable backend systems, modern frontends, and intelligent AI agents.
+                    Passionate about clean architecture and innovative solutions.
+                </motion.p>
+
+                {/* Buttons */}
+                <motion.div
+                    variants={itemVariants}
+                    className="flex flex-col sm:flex-row items-center gap-4 mb-12"
+                >
+                    <a
+                        href="/cv-diego-cancino.pdf"
+                        download
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                    >
+                        <Download size={18} />
+                        Download CV
+                        <ArrowUpRight size={16} />
+                    </a>
+                    <a
+                        href="#contact"
+                        className="inline-flex items-center gap-2 px-6 py-3 border border-gray-700 text-white rounded-lg font-medium hover:bg-white/5 transition-colors"
+                    >
+                        Get in touch
+                    </a>
+                </motion.div>
+
+                {/* Social Links */}
+                <motion.div
+                    variants={itemVariants}
+                    className="flex items-center gap-4"
+                >
+                    <a
+                        href="https://github.com/diegitfk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-12 h-12 rounded-full border border-gray-700/50 flex items-center justify-center hover:border-gray-500 hover:bg-white/5 transition-all backdrop-blur-sm"
+                    >
+                        <Github size={20} className="text-gray-400" />
+                    </a>
+                    <a
+                        href="https://www.linkedin.com/in/diego-cancino-b19850294/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-12 h-12 rounded-full border border-gray-700/50 flex items-center justify-center hover:border-gray-500 hover:bg-white/5 transition-all backdrop-blur-sm"
+                    >
+                        <Linkedin size={20} className="text-gray-400" />
+                    </a>
+                    <a
+                        href="https://x.com/diegitfk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-12 h-12 rounded-full border border-gray-700/50 flex items-center justify-center hover:border-gray-500 hover:bg-white/5 transition-all backdrop-blur-sm"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            className="w-5 h-5 text-gray-400 fill-current"
                         >
-                            <SplitText 
-                                className='w-full p-3 sm:p-4 text-white text-base sm:text-lg lg:text-xl leading-relaxed' 
-                                text={words} 
-                                animation="blur"
-                                staggerDelay={0.02}
-                                duration={0.5}
-                            />
-                        </motion.div>
-                    )}
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+                </motion.div>
+
+                {/* Scroll Indicator */}
+                <motion.div
+                    variants={itemVariants}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2"
+                >
+                    <div className="flex flex-col items-center gap-2 text-gray-500">
+                        <span className="text-xs uppercase tracking-wider">Scroll</span>
+                        <div className="w-px h-8 bg-gradient-to-b from-gray-500 to-transparent" />
+                    </div>
                 </motion.div>
             </motion.div>
-        </motion.section>
-    )
+        </section>
+    );
 }

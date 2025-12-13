@@ -1,7 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { motion, useInView } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface ProjectCardData {
   id: number;
@@ -20,17 +20,19 @@ export interface StackedProjectCardsProps {
 export function StackedProjectCards({ projects }: StackedProjectCardsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, amount: 0.3 });
 
   const rotateCards = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % projects.length);
   }, [projects.length]);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || !isInView) return;
 
-    const interval = setInterval(rotateCards, 3000);
+    const interval = setInterval(rotateCards, 1500);
     return () => clearInterval(interval);
-  }, [rotateCards, isPaused]);
+  }, [rotateCards, isPaused, isInView]);
 
   const getStatusConfig = (status: ProjectCardData["status"]) => {
     switch (status) {
@@ -51,6 +53,7 @@ export function StackedProjectCards({ projects }: StackedProjectCardsProps) {
 
   return (
     <div
+      ref={containerRef}
       className="relative w-full h-[380px] sm:h-[450px] md:h-[520px] lg:h-[580px] xl:h-[620px] flex items-center justify-center pt-2 sm:pt-4 md:pt-6 lg:pt-8"
       style={{
         perspective: "1200px",
@@ -200,7 +203,7 @@ export function MockWebpage() {
       title: "SISA Médica",
       description: "Centro de Imagenología con servicios de Resonancia Magnética, Tomografía Computada, Radiografía, Mamografía y Ecografía.",
       status: "completed",
-      date: "2024",
+      date: "2025",
       image: "/images/projects/sisa-medica.png",
       url: "https://sisamedica.cl/"
     },
@@ -209,10 +212,10 @@ export function MockWebpage() {
       title: "San Fernando Salud",
       description: "Centro Médico con más de 25 especialidades médicas, laboratorio clínico acreditado y servicios integrales de salud.",
       status: "completed",
-      date: "2024",
+      date: "2025",
       image: "/images/projects/sanfernando-salud.png",
       url: "https://sanfernandosalud.cl/"
-    },
+    }
   ];
 
   return <StackedProjectCards projects={projects} />;
