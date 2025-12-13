@@ -53,28 +53,35 @@ export function HeroSection() {
 
     return (
         <motion.section 
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 bg-black min-h-screen"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
         >
             <motion.div 
-                className="min-h-[50vh] md:min-h-screen flex flex-col items-center justify-center bg-black order-2 md:order-1 relative"
+                className="min-h-[40vh] sm:min-h-[50vh] lg:min-h-screen flex flex-col items-center justify-center bg-black order-2 lg:order-1 relative py-8 lg:py-0"
                 variants={itemVariants}
             >
-                <div className="relative z-10">
-                    <Image src="/images/personal-hero-section.png" alt="Hero" width={500} height={500} priority />
+                <div className="relative z-10 w-full max-w-[280px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[380px] xl:max-w-[420px] mx-auto">
+                    <Image 
+                        src="/images/personal-hero-section.png" 
+                        alt="Hero" 
+                        width={500} 
+                        height={500} 
+                        priority 
+                        className="w-full h-auto object-contain"
+                    />
                 </div>
                 <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 z-0">
                     <TechScrollSlider />
                 </div>
             </motion.div>
             <motion.div 
-                className="flex flex-col justify-start pt-10 md:pt-32 px-4 md:px-0 order-1 md:order-2"
+                className="flex flex-col justify-start pt-36 sm:pt-40 lg:pt-32 xl:pt-40 px-4 sm:px-6 lg:px-8 xl:px-12 order-1 lg:order-2"
                 variants={staggerItemVariants}
             >
                 <motion.div 
-                    className="flex flex-row items-center justify-center md:justify-start"
+                    className="flex flex-row items-center justify-center lg:justify-start"
                     variants={itemVariants}
                 >
                     <LayoutTextFlip text='Desarrollador ' words={[
@@ -84,21 +91,21 @@ export function HeroSection() {
                     ]} />
                 </motion.div>
                 <motion.div 
-                    className="flex flex-col items-center md:items-start mt-8"
+                    className="flex flex-col items-center lg:items-start mt-6 sm:mt-8"
                     variants={itemVariants}
                 >
-                    <div className="p-4 w-full md:w-[1/2]">
+                    <div className="p-3 sm:p-4 w-full lg:w-11/12 xl:w-full">
                         <ReasoningSection isStreaming={isThinkingStreaming} setIsStreaming={setIsThinkingStreaming} />
                     </div>
                     {!isThinkingStreaming && (
                         <motion.div 
-                            className="w-full md:w-[1/2] "
+                            className="w-full lg:w-11/12 xl:w-full"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.5 }}
                         >
                             <SplitText 
-                                className='w-full p-4 text-white text-xl' 
+                                className='w-full p-3 sm:p-4 text-white text-base sm:text-lg lg:text-xl leading-relaxed' 
                                 text={words} 
                                 animation="blur"
                                 staggerDelay={0.02}
