@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 
 export interface ProjectCardData {
   id: number;
@@ -149,10 +150,12 @@ export function StackedProjectCards({ projects }: StackedProjectCardsProps) {
                 <div className="relative flex-1 overflow-hidden bg-[#050505] group">
                   {project.image ? (
                     <>
-                      <img
+                      <Image
                         src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover object-top opacity-90 transition-all duration-500 group-hover:scale-105"
+                        width={400}
+                        height={300}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-transparent to-transparent opacity-40" />
                     </>

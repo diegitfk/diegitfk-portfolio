@@ -2,6 +2,9 @@ import type { CollectionConfig } from "payload";
 
 export const Projects : CollectionConfig = {
     slug: 'projects',
+    access: {
+        read: () => true,
+    },
     fields : [
         {
             type : "text",
@@ -22,7 +25,7 @@ export const Projects : CollectionConfig = {
             type : "relationship",
             relationTo : "media",
             hasMany : false,
-            required : true,
+            required : false,
             name : "image_repo"
         },
         {
@@ -44,6 +47,13 @@ export const Projects : CollectionConfig = {
                 }
             ],
             index : true
+        },
+        {
+            type : "relationship",
+            relationTo : "knowledge_project",
+            hasMany : true,
+            required : false,
+            name : "knowledge_project"
         }
     ]
 }

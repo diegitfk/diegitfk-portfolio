@@ -7,6 +7,7 @@ import { BlurNavbar } from '@/components/BlurNavbar'
 import { AboutSection } from '@/components/sections/about-section'
 import { HorizontalExperienceScroll, ExperienceSectionData } from '@/components/sections/experience-showcase'
 import { ContactSection } from '@/components/sections/contact-section'
+import { ChatBot } from '@/components/chat/chat-bot'
 
 export default function HomePage() {
   const [showContent, setShowContent] = useState(false)
@@ -91,6 +92,7 @@ export default function HomePage() {
             />
           </AboutSection>
           <ContactSection />
+          <ChatBot visible={showContent} />
         </>
       )}
     </>

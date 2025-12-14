@@ -72,6 +72,7 @@ export interface Config {
     projects: Project;
     posts: Post;
     'tree-nodes': TreeNode;
+    knowledge_project: KnowledgeProject;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     'tree-nodes': TreeNodesSelect<false> | TreeNodesSelect<true>;
+    knowledge_project: KnowledgeProjectSelect<false> | KnowledgeProjectSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -175,10 +177,31 @@ export interface Project {
   name: string;
   description: string;
   github_repo?: string | null;
-  image_repo: number | Media;
+  image_repo?: (number | null) | Media;
   project_type: 'backend' | 'frontend' | 'full-stack';
+  knowledge_project?: (number | KnowledgeProject)[] | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_project".
+ */
+export interface KnowledgeProject {
+  id: number;
+  description: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -266,6 +289,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tree-nodes';
         value: number | TreeNode;
+      } | null)
+    | ({
+        relationTo: 'knowledge_project';
+        value: number | KnowledgeProject;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -360,6 +387,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   github_repo?: T;
   image_repo?: T;
   project_type?: T;
+  knowledge_project?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -387,6 +415,25 @@ export interface TreeNodesSelect<T extends boolean = true> {
   children?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_project_select".
+ */
+export interface KnowledgeProjectSelect<T extends boolean = true> {
+  description?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

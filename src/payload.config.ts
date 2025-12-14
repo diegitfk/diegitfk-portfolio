@@ -15,6 +15,7 @@ import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Posts } from './collections/Posts'
 import { TreeNodes } from './collections/TreeNodes'
+import { KnowledgeProject } from './collections/KnowledgeProjects'
 
 // Blocks Import
 import { FileTreeBlock } from './blocks/FileTreeBlock/config'
@@ -33,7 +34,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Projects, Posts, TreeNodes],
+  collections: [Users, Media, Projects, Posts, TreeNodes , KnowledgeProject],
   editor: lexicalEditor({
     features: ({ defaultFeatures, rootFeatures }) => [
       ...defaultFeatures,
@@ -61,6 +62,9 @@ export default buildConfig({
       collections : {
         media : {
           prefix : 'media'
+        },
+        knowledge_project : {
+          prefix : 'knowledge_project'
         }
       },
       bucket : process.env.S3_BUCKET || '',
