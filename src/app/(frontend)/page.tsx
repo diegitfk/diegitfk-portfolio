@@ -78,15 +78,7 @@ export default function HomePage() {
                   title: "Backend Experience",
                   subtitle: "Expertise",
                   description: "Building robust and scalable server-side applications with Node.js, Python, and modern databases. Designing RESTful APIs and microservices architectures for high-performance systems.",
-                  projects: [
-                    {
-                      id: 3,
-                      title: "API Services",
-                      description: "Backend services and API development for healthcare platforms.",
-                      status: "completed",
-                      date: "2024",
-                    },
-                  ]
+                  customComponent: "backend-stack",
                 },
                 {
                   id: "ai",

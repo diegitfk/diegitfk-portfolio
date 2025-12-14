@@ -6,6 +6,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useInView } from "framer-motion";
 import { StackedProjectCards } from "./stacked-project-cards";
 import { AIChatPreview } from "./ai-chat-preview";
+import { BackendExperienceCard } from "./backend-experience-card";
+import { MicroservicesArchitecture } from "./microservices-architecture";
+import { WorkflowAutomationArchitecture } from "./workflow-automation-architecture";
+import { BackendExperienceStack } from "./backend-experience-stack";
 
 // Registrar ScrollTrigger
 if (typeof window !== "undefined") {
@@ -18,7 +22,7 @@ export interface ExperienceSectionData {
   subtitle: string;
   description: string;
   projects?: import("./stacked-project-cards").ProjectCardData[];
-  customComponent?: "ai-chat";
+  customComponent?: "ai-chat" | "microservices-architecture" | "workflow-automation" | "backend-stack";
 }
 
 export interface HorizontalExperienceScrollProps {
@@ -133,6 +137,16 @@ function SectionPanel({ section }: { section: ExperienceSectionData }) {
           >
             {section.customComponent === "ai-chat" ? (
               <AIChatPreview />
+            ) : section.customComponent === "microservices-architecture" ? (
+              <BackendExperienceCard title="Arquitectura de MicroServicios">
+                <MicroservicesArchitecture />
+              </BackendExperienceCard>
+            ) : section.customComponent === "workflow-automation" ? (
+              <BackendExperienceCard title="Workflow Automatizations">
+                <WorkflowAutomationArchitecture />
+              </BackendExperienceCard>
+            ) : section.customComponent === "backend-stack" ? (
+              <BackendExperienceStack />
             ) : section.projects ? (
               <StackedProjectCards projects={section.projects} />
             ) : null}
