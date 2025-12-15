@@ -23,7 +23,6 @@ const nim = createOpenAICompatible({
   });
 
 const googleApiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-console.log(`🔑 Google API Key: ${googleApiKey ? googleApiKey.substring(0, 10) + '...' : 'NOT SET'}`);
 
 const google = createGoogleGenerativeAI({
     name: 'google',

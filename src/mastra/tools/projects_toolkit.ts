@@ -1,13 +1,10 @@
 import { createTool, InferUITools } from "@mastra/core/tools";
 import { z } from "zod";
 
-import { PayloadSDK } from "@payloadcms/sdk";
-import type {Config, KnowledgeProject} from '@/payload-types'
-import { create } from "domain";
+import { clientSDK } from "@/utils/payloadClient";
+import { KnowledgeProject } from "@/payload-types"
 
-const sdk = new PayloadSDK<Config>({
-    baseURL : 'http://localhost:3000/api',
-})
+const sdk = clientSDK
 
 export const projectListTool = createTool({
     id : 'projectListTool',
