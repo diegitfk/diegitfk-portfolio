@@ -20,7 +20,12 @@ const initializeMermaid = (theme: string = 'default') => {
       theme: theme === 'dark' ? 'dark' : 'default',
       securityLevel: 'strict', // Seguridad máxima para contenido de usuarios
       fontFamily: 'inherit',
+      suppressErrorRendering: true, // Evita que mermaid renderice errores en el DOM automáticamente
     })
+    // Sobreescribir el manejador de errores para evitar que se cree el elemento HTML por defecto
+    mermaid.parseError = (err) => {
+      console.error('Mermaid Parse Error suppressed:', err) 
+    }
     mermaidInitialized = true
   }
 }

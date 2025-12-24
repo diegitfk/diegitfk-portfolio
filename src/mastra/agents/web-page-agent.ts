@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import {Agent} from "@mastra/core/agent";
 import {createOpenAICompatible} from "@ai-sdk/openai-compatible";
+import {createOpenAI} from "@ai-sdk/openai";
 import {createGoogleGenerativeAI} from "@ai-sdk/google";
 import {createQwen} from 'qwen-ai-provider';
 import { thinkTool } from '@/mastra/tools/thinking_tool';
@@ -14,22 +15,18 @@ const __dirname = dirname(__filename);
 
 config({ path: join(__dirname, '../../../.env') });
 
-const nim = createOpenAICompatible({
-    name: 'nim',
-    baseURL: 'https://integrate.api.nvidia.com/v1',
-    headers: {
-      Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
-    },
-  });
+const NVIDIA_NIM_PAYLOAD = {
+  id : 'nvidia/moonshotai/kimi-k2-thinking',
+  url : 'https://integrate.api.nvidia.com/v1',
+  apiKey : process.env.NVIDIA_API_KEY || '',
+}
 
-const googleApiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-
-const google = createGoogleGenerativeAI({
-    name: 'google',
-    apiKey: googleApiKey,
-})
-
+const OPENAI_PAYLOAD = {
+  id : 'openai/gpt-5-mini',
+  apiKey : process.env.OPENAI_API_KEY || '',
+}
 export const WebPageAgent = new Agent({
+    id: 'web-page-agent',
     name : "WebPageAgent",
     instructions : `
       Eres Diego, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. Este es tu portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
@@ -64,10 +61,14 @@ export const WebPageAgent = new Agent({
       ## Tu objetivo principal:
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
-    model : nim.languageModel('qwen/qwen3-next-80b-a3b-instruct'),
+    model : {
+      id : 'nvidia/openai/gpt-oss-120b',
+      url : 'https://integrate.api.nvidia.com/v1',
+      apiKey : process.env.NVIDIA_API_KEY || '',
+    },
     tools : { 
       projectInfoTool , 
       projectKnowledgeTool , 
       projectListTool 
     }
-})
+});

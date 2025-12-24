@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, memo, useMemo } from "react";
+import { useState, memo, useMemo, useCallback, useDeferredValue, useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import type { UIMessage } from "ai";
+import type { UIMessage, ChatStatus } from "ai";
 import { Bot, X, MessageCircle, CheckCircle, Clock, Circle, XCircle, Wrench, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
+import mermaid from "mermaid";
+import { useTheme } from "next-themes";
 
 import {
   Conversation,
@@ -33,7 +35,7 @@ import {
   PromptInputTools,
   PromptInputSubmit,
 } from "@/components/ai-elements/prompt-input";
-import { MermaidDiagram } from "@/components/render-blocks/Mermaid";
+
 
 // Componente Tool simplificado sin animaciones pesadas
 type SimpleToolState = "input-streaming" | "input-available" | "output-available" | "output-error";
@@ -77,126 +79,110 @@ type PartAny = {
 
 // Función para procesar parts de un mensaje - fuera del componente para evitar recreación
 function processMessageParts(parts: UIMessage["parts"]) {
-  const textParts: { id: string; text: string }[] = [];
-  const toolParts: { 
-    toolCallId: string; 
-    toolName: string; 
-    type: string;
-    state: string; 
-    input?: Record<string, unknown>; 
-    output?: Record<string, unknown>; 
-  }[] = [];
-  const reasoningParts: { index: number; text: string }[] = [];
-  
-  const textMap = new Map<string, string>();
-  const toolMap = new Map<string, typeof toolParts[0]>();
-  const statePriority: Record<string, number> = {
-    'input-streaming': 1,
-    'input-available': 2,
-    'output-available': 3,
-    'result': 3,
-  };
-  
+  const mergedParts: Array<{
+    id: string;
+    type: 'text' | 'reasoning' | 'tool';
+    text?: string;
+    toolCallId?: string;
+    toolName?: string;
+    state?: string;
+    input?: Record<string, unknown>;
+    output?: Record<string, unknown>;
+  }> = [];
+
+  const idMap = new Map<string, number>();
+
   parts.forEach((p, index) => {
     const part = p as PartAny;
-    
+
     if (part.type === "text-delta" && part.id && part.delta) {
-      const existing = textMap.get(part.id) || "";
-      textMap.set(part.id, existing + part.delta);
+      if (idMap.has(part.id)) {
+        const idx = idMap.get(part.id)!;
+        if (mergedParts[idx].type === 'text') {
+           mergedParts[idx].text = (mergedParts[idx].text || '') + part.delta;
+        }
+      } else {
+        idMap.set(part.id, mergedParts.length);
+        mergedParts.push({
+          id: part.id,
+          type: 'text',
+          text: part.delta
+        });
+      }
     } else if (part.type === "text" && part.text) {
-      textParts.push({ id: `static-${index}`, text: part.text });
+      mergedParts.push({ 
+        id: `static-${index}`, 
+        type: 'text', 
+        text: part.text 
+      });
     } else if (part.type === "reasoning" && part.text) {
-      reasoningParts.push({ index, text: part.text });
+      // Merge adjacent reasoning parts
+      const lastPart = mergedParts[mergedParts.length - 1];
+      if (lastPart?.type === 'reasoning') {
+          lastPart.text = (lastPart.text || '') + part.text;
+      } else {
+          mergedParts.push({ 
+            id: `reasoning-${index}`, 
+            type: 'reasoning', 
+            text: part.text 
+          });
+      }
     } else if (part.type.startsWith("tool-") && part.toolCallId) {
-      const existing = toolMap.get(part.toolCallId);
-      const currentPriority = statePriority[part.state || ''] || 0;
-      const existingPriority = statePriority[existing?.state || ''] || 0;
-      
-      if (!existing || currentPriority >= existingPriority) {
-        toolMap.set(part.toolCallId, {
+      if (idMap.has(part.toolCallId)) {
+        const idx = idMap.get(part.toolCallId)!;
+        const existing = mergedParts[idx];
+        
+        const statePriority: Record<string, number> = {
+          'input-streaming': 1,
+          'input-available': 2,
+          'output-available': 3,
+          'result': 3,
+        };
+        const currentPriority = statePriority[part.state || ''] || 0;
+        const existingPriority = statePriority[existing.state || ''] || 0;
+        
+        if (currentPriority >= existingPriority) {
+          mergedParts[idx] = {
+            ...existing,
+            toolName: part.type.replace("tool-", ""),
+            state: part.state || 'call',
+            input: part.input || existing.input,
+            output: part.output || existing.output,
+          };
+        }
+      } else {
+        idMap.set(part.toolCallId, mergedParts.length);
+        mergedParts.push({
+          id: part.toolCallId,
+          type: 'tool',
           toolCallId: part.toolCallId,
           toolName: part.type.replace("tool-", ""),
-          type: part.type,
           state: part.state || 'call',
-          input: part.input || existing?.input,
-          output: part.output || existing?.output,
+          input: part.input,
+          output: part.output,
         });
       }
     }
   });
-  
-  // Convertir textMap a array
-  textMap.forEach((text, id) => {
-    textParts.unshift({ id, text });
-  });
-  
-  // Convertir toolMap a array
-  toolMap.forEach((tool) => {
-    toolParts.push(tool);
-  });
-  
-  return { textParts, toolParts, reasoningParts };
+
+  return mergedParts;
 }
 
-// Función para extraer bloques mermaid del texto
-function extractMermaidBlocks(text: string): { parts: Array<{ type: 'text' | 'mermaid'; content: string }>} {
-  const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
-  const parts: Array<{ type: 'text' | 'mermaid'; content: string }> = [];
-  let lastIndex = 0;
-  let match;
 
-  while ((match = mermaidRegex.exec(text)) !== null) {
-    // Añadir texto antes del bloque mermaid
-    if (match.index > lastIndex) {
-      const textBefore = text.slice(lastIndex, match.index).trim();
-      if (textBefore) {
-        parts.push({ type: 'text', content: textBefore });
-      }
-    }
-    // Añadir el bloque mermaid
-    parts.push({ type: 'mermaid', content: match[1].trim() });
-    lastIndex = match.index + match[0].length;
-  }
 
-  // Añadir texto restante después del último bloque mermaid
-  if (lastIndex < text.length) {
-    const textAfter = text.slice(lastIndex).trim();
-    if (textAfter) {
-      parts.push({ type: 'text', content: textAfter });
-    }
-  }
-
-  // Si no hay bloques mermaid, devolver el texto completo
-  if (parts.length === 0 && text.trim()) {
-    parts.push({ type: 'text', content: text.trim() });
-  }
-
-  return { parts };
-}
-
-// Componente para texto - memoizado, con soporte para mermaid
+// Componente para texto - memoizado
 const TextPart = memo(function TextPart({ text }: { text: string }) {
-  const cleanText = text.replace(/\{"name":\s*"[^"]*",\s*"arguments":\s*\{[\s\S]*?\}\}\s*_?\s*/g, '').trim();
+  // Limpiar el texto de argumentos de herramientas si es necesario
+  const cleanText = useMemo(() => {
+    return text.replace(/\{"name":\s*"[^"]*",\s*"arguments":\s*\{[\s\S]*?\}\}\s*_?\s*/g, '').trim();
+  }, [text]);
+
   if (!cleanText) return null;
   
-  const { parts } = extractMermaidBlocks(cleanText);
-  
-  return (
-    <>
-      {parts.map((part, index) => {
-        if (part.type === 'mermaid') {
-          return (
-            <div key={index} className="my-4 w-full">
-              <MermaidDiagram code={part.content} />
-            </div>
-          );
-        }
-        return <MessageResponse key={index} className="text-white">{part.content}</MessageResponse>;
-      })}
-    </>
-  );
+  return <MessageResponse className="text-white">{cleanText}</MessageResponse>;
 });
 
+// Componente para reasoning - memoizado
 // Componente para reasoning - memoizado
 const ReasoningPart = memo(function ReasoningPart({ 
   text, 
@@ -205,9 +191,16 @@ const ReasoningPart = memo(function ReasoningPart({
   text: string; 
   isStreaming: boolean;
 }) {
+  const getThinkingMessage = (isStreaming: boolean, duration?: number) => {
+    if (isStreaming) {
+      return <span className="animate-pulse">Thinking...</span>;
+    }
+    return <span>Thought{duration !== undefined && duration > 0 ? `(${duration}s)` : ''}</span>;
+  };
+
   return (
-    <Reasoning isStreaming={isStreaming}>
-      <ReasoningTrigger />
+    <Reasoning isStreaming={isStreaming} defaultOpen={false}>
+      <ReasoningTrigger getThinkingMessage={getThinkingMessage} />
       <ReasoningContent>{text}</ReasoningContent>
     </Reasoning>
   );
@@ -282,40 +275,111 @@ const ToolPart = memo(function ToolPart({
 // Componente principal para el contenido del mensaje
 const ChatMessageContent = memo(function ChatMessageContent({ 
   message, 
-  isLoading 
+  isStreaming 
 }: { 
   message: UIMessage; 
-  isLoading: boolean;
+  isStreaming: boolean;
 }) {
-  const { textParts, toolParts, reasoningParts } = processMessageParts(message.parts);
+  // Optimizacion React 19: Defer low priority updates (complex rendering)
+  // to allow user interactions (input) to be snappy
+  const deferredMessage = useDeferredValue(message);
+  
+  const parts = useMemo(() => processMessageParts(deferredMessage.parts), [deferredMessage.parts]);
   
   return (
     <>
-      {/* Tools primero - aparecen encima del texto */}
-      {toolParts.map((part) => (
-        <ToolPart 
-          key={part.toolCallId}
-          toolCallId={part.toolCallId}
-          toolName={part.toolName}
-          type={part.type}
-          state={part.state}
-          input={part.input}
-          output={part.output}
-        />
-      ))}
-      {/* Reasoning después de tools */}
-      {reasoningParts.map((part) => (
-        <ReasoningPart 
-          key={part.index} 
-          text={part.text} 
-          isStreaming={isLoading && part.index === message.parts.length - 1} 
-        />
-      ))}
-      {/* Texto al final - el streaming aparece debajo de las tools */}
-      {textParts.map((part) => (
-        <TextPart key={part.id} text={part.text} />
-      ))}
+      {parts.map((part, index) => {
+        if (part.type === 'tool' && part.toolCallId) {
+          return (
+            <ToolPart 
+              key={part.toolCallId}
+              toolCallId={part.toolCallId}
+              toolName={part.toolName || 'Tool'}
+              type={part.type}
+              state={part.state || 'call'}
+              input={part.input}
+              output={part.output}
+            />
+          );
+        }
+        
+        if (part.type === 'reasoning' && part.text) {
+          return (
+            <ReasoningPart 
+              key={part.id} 
+              text={part.text} 
+              isStreaming={isStreaming && index === parts.length - 1} 
+            />
+          );
+        }
+
+        if (part.type === 'text' && part.text) {
+           return <TextPart key={part.id} text={part.text} />;
+        }
+
+        return null;
+      })}
     </>
+  );
+});
+
+// Componente input memoizado para evitar re-renders durante streaming
+const MemoizedChatInput = memo(function MemoizedChatInput({ 
+  sendMessage, 
+  status, 
+  stop, 
+  isLoading 
+}: { 
+  sendMessage: (options: { text: string }) => void;
+  status: ChatStatus;
+  stop: () => void;
+  isLoading: boolean;
+}) {
+  const handleSubmit = useCallback((data: { text: string }) => {
+    if (data.text.trim()) {
+      sendMessage({ text: data.text });
+    }
+  }, [sendMessage]); // Removed 'data' from dependencies as it's an arg
+
+  return (
+    <div className="border-t border-gray-700/50 bg-black/80 p-3">
+      <PromptInput
+        onSubmit={handleSubmit}
+        className="bg-black/50 rounded-xl border border-gray-700/50"
+      >
+        <PromptInputTextarea
+          placeholder="Escribe tu mensaje..."
+          className="min-h-10 max-h-24 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-500"
+        />
+        <PromptInputFooter>
+          <PromptInputTools />
+          <PromptInputSubmit
+            status={status}
+            onClick={isLoading ? stop : undefined}
+            className="bg-white text-black hover:bg-gray-200 border-none transition-colors"
+          />
+        </PromptInputFooter>
+      </PromptInput>
+    </div>
+  );
+});
+
+const MessageItem = memo(function MessageItem({ 
+  message, 
+  isStreaming 
+}: { 
+  message: UIMessage; 
+  isStreaming: boolean 
+}) {
+  return (
+    <Message from={message.role}>
+      <MessageContent>
+        <ChatMessageContent 
+          message={message} 
+          isStreaming={isStreaming} 
+        />
+      </MessageContent>
+    </Message>
   );
 });
 
@@ -331,6 +395,19 @@ export function ChatBot({ visible = true }: ChatBotProps) {
       api: "/api/chat",
     }),
   });
+
+  const { theme, resolvedTheme } = useTheme();
+
+  // Inicializar mermaid globalmente con la fuente correcta
+  useEffect(() => {
+    const currentTheme = theme === "system" ? resolvedTheme : theme;
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: currentTheme === "dark" ? "dark" : "default",
+      securityLevel: "strict",
+      fontFamily: "var(--font-sans), Inter, sans-serif",
+    });
+  }, [theme, resolvedTheme]);
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -417,12 +494,12 @@ export function ChatBot({ visible = true }: ChatBotProps) {
                     className="text-gray-400"
                   />
                 ) : (
-                  messages.map((message) => (
-                    <Message key={message.id} from={message.role}>
-                      <MessageContent>
-                        <ChatMessageContent message={message} isLoading={isLoading} />
-                      </MessageContent>
-                    </Message>
+                  messages.map((message, index) => (
+                    <MessageItem 
+                      key={message.id} 
+                      message={message} 
+                      isStreaming={index === messages.length - 1 && isLoading} 
+                    />
                   ))
                 )}
 
@@ -441,29 +518,12 @@ export function ChatBot({ visible = true }: ChatBotProps) {
             </Conversation>
 
             {/* Input */}
-            <div className="border-t border-gray-700/50 bg-black/80 p-3">
-              <PromptInput
-                onSubmit={({ text }) => {
-                  if (text.trim()) {
-                    sendMessage({ text });
-                  }
-                }}
-                className="bg-black/50 rounded-xl border border-gray-700/50"
-              >
-                <PromptInputTextarea
-                  placeholder="Escribe tu mensaje..."
-                  className="min-h-10 max-h-24 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-500"
-                />
-                <PromptInputFooter>
-                  <PromptInputTools />
-                  <PromptInputSubmit
-                    status={status}
-                    onClick={isLoading ? stop : undefined}
-                    className="bg-white text-black hover:bg-gray-200 border-none transition-colors"
-                  />
-                </PromptInputFooter>
-              </PromptInput>
-            </div>
+            <MemoizedChatInput
+              sendMessage={sendMessage}
+              status={status}
+              stop={stop}
+              isLoading={isLoading}
+            />
           </motion.div>
           </>
         )}

@@ -3,7 +3,6 @@ import { RichTextRender } from "@/components/RichTextRender";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BlogHeader } from "@/components/BlogHeader";
 import { extractHeadings } from "@/lib/headingUtils";
-import Image from "next/image";
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) { // En Next.js 15, params es una Promise
     // 1. Unir el array en un solo string

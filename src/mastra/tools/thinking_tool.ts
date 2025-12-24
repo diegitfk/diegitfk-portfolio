@@ -1,4 +1,4 @@
-import { createTool } from "@mastra/core";
+import { createTool } from '@mastra/core/tools';
 import z from "zod"
 
 export const thinkTool = createTool({
@@ -10,8 +10,8 @@ export const thinkTool = createTool({
     outputSchema : z.object({
         thought : z.string().describe("Pensamiento reflexivo para responder una pregunta del usuario"),
     }),
-    execute : async (ctx) => {
-        const {thought} = ctx.context;
+    execute : async (input) => {
+        const {thought} = input;
         console.log(thought)
         return {
             thought

@@ -38,8 +38,8 @@ export const projectListTool = createTool({
             })
         )
     }),
-    execute : async ({context}) => {
-        const {typeProject} = context;
+    execute : async (input) => {
+        const {typeProject} = input;
         const response = await sdk.find({
             collection : "projects",
             limit : 20,
@@ -96,8 +96,8 @@ export const projectInfoTool = createTool({
             })
         )
     }),
-    execute : async ({context}) => {
-        const {idProject} = context
+    execute : async (input) => {
+        const {idProject} = input
         const project = await sdk.findByID({
             collection : 'projects',
             id : idProject
@@ -138,8 +138,8 @@ export const projectKnowledgeTool = createTool({
     outputSchema : z.object({
         contentFile : z.string()
     }),
-    execute : async ({context}) => {
-        const {nameFile} = context
+    execute : async (input) => {
+        const {nameFile} = input
         const file = await sdk.request({
             method : 'GET',
             path : `/knowledge_project/file/${nameFile}`,

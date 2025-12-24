@@ -22,6 +22,7 @@ type ReasoningContextValue = {
 
 const ReasoningContext = createContext<ReasoningContextValue | null>(null);
 
+// React 19: 'use' hook supersedes useContext
 export const useReasoning = () => {
   const context = useContext(ReasoningContext);
   if (!context) {

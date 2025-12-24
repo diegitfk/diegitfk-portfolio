@@ -1,6 +1,6 @@
 import { mastra } from "@/mastra";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
-import { toAISdkFormat } from "@mastra/ai-sdk";
+import { toAISdkStream } from "@mastra/ai-sdk";
 
 // Función para truncar outputs largos de las tools
 function truncateToolOutput(part: Record<string, unknown>): Record<string, unknown> {
@@ -54,12 +54,21 @@ function truncateToolOutput(part: Record<string, unknown>): Record<string, unkno
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const myAgent = mastra.getAgent("WebPageAgent");
-  const stream = await myAgent.stream(messages);
+  const stream = await myAgent.stream(
+    messages , {
+      providerOptions : {
+        openai:{
+          reasoningEffort : 'medium',
+          reasoningSummary : 'concise',
+        },
+      }
+    }
+  );
 
   // Transform stream into AI SDK format and create UI messages stream
   const uiMessageStream = createUIMessageStream({
     execute: async ({ writer }) => {
-      const aiSdkStream = toAISdkFormat(stream, { from: "agent" });
+      const aiSdkStream = toAISdkStream(stream, { from: "agent", sendReasoning : true });
       if (!aiSdkStream) {
         throw new Error("Failed to convert stream to AI SDK format");
       }
