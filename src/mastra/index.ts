@@ -4,7 +4,6 @@ import { LibSQLStore } from '@mastra/libsql';
 import { WebPageAgent } from '@/mastra/agents/web-page-agent';
 
 export const mastra = new Mastra({
-  id: 'portfolio-mastra',
   agents: { WebPageAgent },
   storage: new LibSQLStore({
     id: 'libsql-storage',
