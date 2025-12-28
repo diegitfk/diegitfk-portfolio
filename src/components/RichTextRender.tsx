@@ -38,14 +38,7 @@ interface RichTextRenderProps {
   }
 }
 
-// Contador global para animaciones secuenciales
-let animationCounter = 0
-const resetAnimationCounter = () => { animationCounter = 0 }
-const getNextDelay = (increment: number = 0.08) => {
-  const delay = animationCounter * increment
-  animationCounter++
-  return delay
-}
+
 
 // --- Funciones de Serialización ---
 
@@ -116,25 +109,22 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
           .map((child: any) => child.text)
           .join('') || ''
         const headingId = generateHeadingId(headingText)
-        const headingDelay = getNextDelay()
         return (
-          <AnimatedSection key={i} delay={headingDelay}>
+          <AnimatedSection key={i} delay={0}>
             <Tag id={headingId} className={tagClasses[node.tag] || ''}>{serializeText(node.children || [], true)}</Tag>
           </AnimatedSection>
         )
 
       case 'paragraph':
-        const paragraphDelay = getNextDelay()
         return (
-          <AnimatedSection key={i} delay={paragraphDelay} duration={0.4}>
+          <AnimatedSection key={i} delay={0} duration={0.4}>
             <p className="text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 mb-3 sm:mb-4">{serializeText(node.children || [], true)}</p>
           </AnimatedSection>
         )
 
       case 'quote':
-        const quoteDelay = getNextDelay()
         return (
-          <AnimatedSection key={i} delay={quoteDelay}>
+          <AnimatedSection key={i} delay={0}>
             <blockquote className="text-sm sm:text-base md:text-lg mt-4 sm:mt-6 mb-3 sm:mb-4 border-l-2 pl-4 sm:pl-6 italic leading-6 sm:leading-7">{serializeText(node.children || [], true)}</blockquote>
           </AnimatedSection>
         )
@@ -147,9 +137,8 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
             ? 'my-4 sm:my-6 ml-4 sm:ml-6 list-decimal space-y-2 marker:text-muted-foreground text-sm sm:text-base md:text-lg'
             : 'my-4 sm:my-6 ml-4 sm:ml-6 list-disc space-y-2 marker:text-foreground text-sm sm:text-base md:text-lg'
 
-        const listDelay = getNextDelay()
         return (
-          <AnimatedSection key={i} delay={listDelay}>
+          <AnimatedSection key={i} delay={0}>
             <ListTag className={listClasses}>{serializeNodes(node.children || [], true)}</ListTag>
           </AnimatedSection>
         )
@@ -157,7 +146,7 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
       case 'listitem':
         if (typeof node.checked === 'boolean') {
           return (
-            <AnimatedListItem key={i} index={i}>
+            <AnimatedListItem key={i} index={0}>
               <li className="flex items-start space-x-2">
                 <input type="checkbox" checked={node.checked} readOnly className="form-checkbox h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 mt-1 flex-shrink-0" />
                 <span className="leading-7">{serializeText(node.children || [], true)}</span>
@@ -166,7 +155,7 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
           )
         }
         return (
-          <AnimatedListItem key={i} index={i}>
+          <AnimatedListItem key={i} index={0}>
             <li className="leading-6 sm:leading-7 md:leading-8">{serializeText(node.children || [], true)}</li>
           </AnimatedListItem>
         )
@@ -177,12 +166,10 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
             const imageUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL 
                 ? `${process.env.NEXT_PUBLIC_PAYLOAD_URL}${value.url}`
                 : value.url
-            const uploadDelay = getNextDelay()
             const imageWidth = value?.width || 800
             const imageHeight = value?.height || 600
-            
             return (
-                <AnimatedBlock key={i} delay={uploadDelay}>
+                <AnimatedBlock key={i} delay={0}>
                   <div className="my-4 sm:my-6 md:my-8 flex justify-center px-4 sm:px-0">
                     <div className="relative w-full max-w-full sm:max-w-[90%] md:max-w-[80%] lg:max-w-3xl" 
                          style={{ maxWidth: value.width ? `min(${value.width}px, 100%)` : '100%' }}>
@@ -202,10 +189,9 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
 
       case 'block':
         const { fields } = node
-        const blockDelay = getNextDelay()
         if (fields?.blockType === 'codeBlock') {
           return (
-            <AnimatedBlock key={i} delay={blockDelay}>
+            <AnimatedBlock key={i} delay={0}>
               <div className="my-8">
                 <CodeBlockRenderer code={fields.code} language={fields.language} filename={fields.filename} iconReference={fields.iconReference}/>
               </div>
@@ -216,7 +202,7 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
           // Casteamos `fields` al tipo esperado por `FileTreeBlockComponent`
           const fileTreeProps = fields as unknown as FileTreeBlockType
           return (
-            <AnimatedBlock key={i} delay={blockDelay}>
+            <AnimatedBlock key={i} delay={0}>
               <div className="my-8 w-full h-full">
                 <FileTreeBlockComponent
                   initialSelectedId={fileTreeProps.initialSelectedId}
@@ -232,7 +218,7 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
           // Casteamos `fields` al tipo esperado por `TabsAnimatedComponent`
           const animatedTabsProps = fields as unknown as AnimatedTabsBlock
           return (
-            <AnimatedBlock key={i} delay={blockDelay}>
+            <AnimatedBlock key={i} delay={0}>
               <div className="my-8 w-full">
                 <TabsAnimatedComponent
                   tabs={animatedTabsProps.tabs}
@@ -244,7 +230,7 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
         }
         if (fields?.blockType === 'mermaid-block') {
           return (
-            <AnimatedBlock key={i} delay={blockDelay}>
+            <AnimatedBlock key={i} delay={0}>
               <div className="my-8 w-full">
                 <MermaidDiagram code={fields.code} />
               </div>
@@ -254,9 +240,8 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
         return null
       
       case 'horizontalrule':
-        const hrDelay = getNextDelay()
         return (
-          <AnimatedSection key={i} delay={hrDelay} duration={0.4}>
+          <AnimatedSection key={i} delay={0} duration={0.4}>
             <hr className="my-8" />
           </AnimatedSection>
         )
@@ -278,7 +263,6 @@ export const RichTextRender: React.FC<RichTextRenderProps> = ({ content }) => {
   if (!content?.root?.children) {
     return null
   }
-  // Resetear el contador de animaciones al renderizar
-  resetAnimationCounter()
+
   return <>{serializeNodes(content.root.children)}</>
 }
