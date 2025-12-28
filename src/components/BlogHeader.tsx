@@ -5,13 +5,17 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { LinkedIn, Gmail, WhatsApp, XLight, XDark } from '@ridemountainpig/svgl-react'
 import { useTheme } from 'next-themes'
-import { cn } from '@/lib/utils'
+import { PixelImage } from '@/components/ui/pixel-image'
 
 interface BlogHeaderProps {
   title: string
+  previewImage?: string | null
 }
 
-export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
+// Tiempo base para que el efecto pixel termine antes de mostrar el contenido
+const PIXEL_EFFECT_DURATION = 1.5 // segundos
+
+export const BlogHeader: React.FC<BlogHeaderProps> = ({ title, previewImage }) => {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
   
@@ -42,34 +46,63 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
   ]
 
   return (
-    <motion.header 
-      className="relative w-full min-h-screen bg-white dark:bg-gray-950 text-black dark:text-white border-b border-gray-200 dark:border-gray-800 overflow-hidden flex items-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      {/* Background de puntos verdes tipo Supabase */}
-      <div
-        className={cn(
-          "absolute inset-0",
-          "[background-size:24px_24px]",
-          "[background-image:radial-gradient(circle,#3ECF8E_1.5px,transparent_1.5px)]",
-          "dark:[background-image:radial-gradient(circle,#3ECF8E_1.5px,transparent_1.5px)]",
-        )}
-        style={{ opacity: 1 }}
-      />
-      
-      {/* Gradiente radial para efecto fade */}
-      <div className="pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-gray-950" />
+    <header className="relative w-full min-h-screen bg-black text-white border-b border-gray-800 overflow-hidden flex items-center">
+      {/* PixelImage Background - Full Screen - Renderiza primero */}
+      {previewImage && (
+        <div className="absolute inset-0 z-0">
+          <PixelImage 
+            src={previewImage}
+            grid="8x8"
+            grayscaleAnimation={true}
+            pixelFadeInDuration={1200}
+            maxAnimationDelay={1500}
+            colorRevealDelay={2000}
+            className="w-full h-full"
+          />
+        </div>
+      )}
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 w-full">
-        <div className="max-w-4xl mx-auto">
+      {/* Gradient overlays - aparecen después del efecto pixel */}
+      <motion.div 
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-[1]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION - 0.5 }}
+      />
+      <motion.div 
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION - 0.5 }}
+      />
+
+      {/* Contenido - aparece DESPUÉS de que el efecto pixel termine */}
+      <motion.div 
+        className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 w-full"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION }}
+      >
+        <div className="max-w-4xl">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: PIXEL_EFFECT_DURATION + 0.1, duration: 0.5 }}
+            className="mb-6"
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-wider text-gray-400 border border-gray-700/50 rounded-full backdrop-blur-sm bg-black/30">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Blog Post
+            </span>
+          </motion.div>
+
           {/* Título del artículo */}
           <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8 sm:mb-10 md:mb-12"
-            initial={{ y: 20, opacity: 0 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-8 sm:mb-10 md:mb-12"
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: PIXEL_EFFECT_DURATION + 0.2, duration: 0.6 }}
           >
             {title}
           </motion.h1>
@@ -79,10 +112,10 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
             className="flex items-center gap-3 sm:gap-4"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            transition={{ delay: PIXEL_EFFECT_DURATION + 0.4, duration: 0.6 }}
           >
             {/* Avatar */}
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden ring-2 ring-gray-300/30 dark:ring-white/20 flex-shrink-0">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden ring-2 ring-white/20 flex-shrink-0">
               <Image
                 src="/images/portfolio-image.webp"
                 alt="Diego Cancino"
@@ -94,10 +127,10 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
             
             {/* Nombre y cargo */}
             <div className="flex flex-col">
-              <span className="text-sm sm:text-base font-semibold text-black dark:text-white">
+              <span className="text-sm sm:text-base font-semibold text-white">
                 Diego Cancino
               </span>
-              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-xs sm:text-sm text-gray-400">
                 CTO & Founder of Tegma Solutions
               </span>
             </div>
@@ -108,7 +141,7 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
             className="flex items-center gap-3 sm:gap-4 mt-6 sm:mt-8"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: PIXEL_EFFECT_DURATION + 0.6, duration: 0.6 }}
           >
             {socialLinks.map((social, index) => (
               <motion.a
@@ -120,7 +153,7 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ 
-                  delay: 0.7 + (index * 0.1),
+                  delay: PIXEL_EFFECT_DURATION + 0.7 + (index * 0.1),
                   duration: 0.3,
                   type: "spring",
                   stiffness: 200
@@ -128,18 +161,18 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title }) => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="p-2 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors border border-gray-300 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20">
+                <div className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-white/10 hover:border-white/20">
                   {social.icon}
                 </div>
                 {/* Tooltip */}
-                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-gray-600 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   {social.name}
                 </span>
               </motion.a>
             ))}
           </motion.div>
         </div>
-      </div>
-    </motion.header>
+      </motion.div>
+    </header>
   )
 }
