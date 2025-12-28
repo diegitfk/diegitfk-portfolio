@@ -28,6 +28,10 @@ interface PixelImageProps {
   maxAnimationDelay?: number // in ms
   colorRevealDelay?: number // in ms
   className?: string
+  /** Object position for responsive image positioning (e.g., "center", "top", "center top") */
+  objectPosition?: string
+  /** Additional classes for the image element itself */
+  imageClassName?: string
 }
 
 export const PixelImage = ({
@@ -39,9 +43,13 @@ export const PixelImage = ({
   colorRevealDelay = 1300,
   customGrid,
   className,
+  objectPosition = "center",
+  imageClassName,
 }: PixelImageProps) => {
+  const [isMounted, setIsMounted] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [showColor, setShowColor] = useState(false)
+  const [delays, setDelays] = useState<number[]>([])
 
   const MIN_GRID = 1
   const MAX_GRID = 16
@@ -63,14 +71,26 @@ export const PixelImage = ({
     return isValidGrid(customGrid) ? customGrid! : DEFAULT_GRIDS[grid]
   }, [customGrid, grid])
 
+  // Generate random delays only on client side to avoid hydration mismatch
   useEffect(() => {
+    const total = rows * cols
+    const generatedDelays = Array.from({ length: total }, () => 
+      Math.random() * maxAnimationDelay
+    )
+    setDelays(generatedDelays)
+    setIsMounted(true)
+  }, [rows, cols, maxAnimationDelay])
+
+  useEffect(() => {
+    if (!isMounted) return
     setIsVisible(true)
     const colorTimeout = setTimeout(() => {
       setShowColor(true)
     }, colorRevealDelay)
     return () => clearTimeout(colorTimeout)
-  }, [colorRevealDelay])
+  }, [isMounted, colorRevealDelay])
 
+  // Generate clip paths (these are deterministic, no random)
   const pieces = useMemo(() => {
     const total = rows * cols
     return Array.from({ length: total }, (_, index) => {
@@ -84,13 +104,27 @@ export const PixelImage = ({
         ${col * (100 / cols)}% ${(row + 1) * (100 / rows)}%
       )`
 
-      const delay = Math.random() * maxAnimationDelay
-      return {
-        clipPath,
-        delay,
-      }
+      return { clipPath }
     })
-  }, [rows, cols, maxAnimationDelay])
+  }, [rows, cols])
+
+  // Don't render until mounted to avoid hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className={cn("relative select-none", className || "h-72 w-72 md:h-96 md:w-96")}>
+        <img
+          src={src}
+          alt="Loading..."
+          className={cn(
+            "w-full h-full object-cover opacity-0",
+            imageClassName
+          )}
+          style={{ objectPosition }}
+          draggable={false}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className={cn("relative select-none", className || "h-72 w-72 md:h-96 md:w-96")}>
@@ -103,7 +137,7 @@ export const PixelImage = ({
           )}
           style={{
             clipPath: piece.clipPath,
-            transitionDelay: `${piece.delay}ms`,
+            transitionDelay: `${delays[index] || 0}ms`,
             transitionDuration: `${pixelFadeInDuration}ms`,
           }}
         >
@@ -112,9 +146,11 @@ export const PixelImage = ({
             alt={`Pixel image piece ${index + 1}`}
             className={cn(
               "z-1 w-full h-full object-cover",
-              grayscaleAnimation && (showColor ? "grayscale-0" : "grayscale")
+              grayscaleAnimation && (showColor ? "grayscale-0" : "grayscale"),
+              imageClassName
             )}
             style={{
+              objectPosition,
               transition: grayscaleAnimation
                 ? `filter ${pixelFadeInDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
                 : "none",
@@ -126,3 +162,4 @@ export const PixelImage = ({
     </div>
   )
 }
+

@@ -133,7 +133,6 @@ const iconsReference : IconsReference[] = [
  * @returns El icono React correspondiente o null si no se encuentra
  */
 const getIconByReference = (reference: string): React.ReactNode | null => {
-  console.log(`Obteniendo icon : ${reference}`)
   const iconData = iconsReference.find(item => item.reference === reference);
   return iconData ? iconData.icon : null;
 };
