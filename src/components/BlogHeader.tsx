@@ -1,10 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { LinkedIn, Gmail, WhatsApp, XLight, XDark } from '@ridemountainpig/svgl-react'
-import { useTheme } from 'next-themes'
+import { LinkedIn, Gmail, WhatsApp, XDark } from '@ridemountainpig/svgl-react'
 import { PixelImage } from '@/components/ui/pixel-image'
 
 interface BlogHeaderProps {
@@ -16,10 +15,13 @@ interface BlogHeaderProps {
 const PIXEL_EFFECT_DURATION = 1.5 // segundos
 
 export const BlogHeader: React.FC<BlogHeaderProps> = ({ title, previewImage }) => {
-  const { theme } = useTheme()
-  const isDark = theme === 'dark'
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
   
-  // Redes sociales
+  // Redes sociales - usamos XDark siempre porque el header tiene fondo negro
   const socialLinks = [
     {
       name: 'LinkedIn',
@@ -39,9 +41,8 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title, previewImage }) =
     {
       name: 'X',
       url: 'https://x.com/diegitfk',
-      icon: isDark 
-        ? <XDark className="w-5 h-5 sm:w-6 sm:h-6" />
-        : <XLight className="w-5 h-5 sm:w-6 sm:h-6" />,
+      // Usamos XDark siempre ya que el BlogHeader siempre tiene fondo negro
+      icon: <XDark className="w-5 h-5 sm:w-6 sm:h-6" />,
     },
   ]
 
@@ -52,25 +53,34 @@ export const BlogHeader: React.FC<BlogHeaderProps> = ({ title, previewImage }) =
         <div className="absolute inset-0 z-0">
           <PixelImage 
             src={previewImage}
-            grid="8x8"
+            grid="6x4"
             grayscaleAnimation={true}
             pixelFadeInDuration={1200}
             maxAnimationDelay={1500}
             colorRevealDelay={2000}
             className="w-full h-full"
+            objectPosition="center top"
+            imageClassName="sm:object-center"
           />
         </div>
       )}
 
-      {/* Gradient overlays - aparecen después del efecto pixel */}
+      {/* Gradient overlays - responsivos: más fuertes en móvil para legibilidad */}
       <motion.div 
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-[1]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/40 sm:from-black/90 sm:via-black/40 sm:to-transparent z-[1]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION - 0.5 }}
       />
       <motion.div 
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent sm:from-black/60 sm:via-transparent z-[1]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION - 0.5 }}
+      />
+      {/* Extra overlay for mobile to improve text readability */}
+      <motion.div 
+        className="pointer-events-none absolute inset-0 bg-black/20 sm:bg-transparent z-[1]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: PIXEL_EFFECT_DURATION - 0.5 }}
