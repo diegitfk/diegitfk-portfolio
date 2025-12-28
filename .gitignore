@@ -9,6 +9,11 @@
 /.idea/*
 !/.idea/runConfigurations
 
+#opencode
+.opencode
+.opencode/*
+.opencode/skill
+opencode.*
 # testing
 /coverage
 
