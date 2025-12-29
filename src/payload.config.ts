@@ -2,6 +2,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { lexicalEditor , BlocksFeature } from '@payloadcms/richtext-lexical'
 
 import path from 'path'
@@ -65,6 +66,79 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    //MCP Plugin
+    mcpPlugin(
+      {
+        collections : {
+          projects : {
+            description : `
+            # Colección _projects_ 
+            Esta colección contiene información detallada sobre los 
+            proyectos realizados, incluyendo títulos, descripciones técnicas, 
+            tecnologías utilizadas y estados de desarrollo. 
+            Es la fuente principal para consultar el portafolio de trabajos y casos de estudio.
+            # Relaciones
+              1. Esta colección tiene una relación con la colección knowledge_project en esta relación
+              se puede acceder a documentos relevantes asociados al proyecto.
+            
+            `,
+            enabled : {
+              find : true,
+              create : false,
+              update : false,
+              delete : false,
+            },
+          },
+          knowledge_project : {
+            description : `
+            # Colección _knowledge_project_
+            Esta colección actúa como una base de conocimientos técnica vinculada a los proyectos.
+            Contiene documentación detallada, guías de implementación, especificaciones y 
+            recursos adicionales que complementan la información general de cada proyecto.
+            # Relaciones
+              1. Esta colección tiene una relación directa con la colección projects, 
+              permitiendo vincular documentos técnicos específicos con su proyecto de origen.
+            `,
+            enabled : {
+              find : true,
+              create : false,
+              update : false,
+              delete : false,
+            },
+          },
+          posts : {
+            description : `
+            # Colección _posts_
+            Esta colección gestiona las publicaciones del blog y artículos informativos. 
+            Contiene el contenido editorial, incluyendo títulos, resúmenes, contenido extenso 
+            y metadatos asociados. Es la fuente principal para acceder a noticias, 
+            tutoriales y actualizaciones del sitio.
+            `,
+            enabled : {
+              find : true,
+              create : false,
+              update : false,
+              delete : false,
+            },
+          },
+          users : {
+            enabled : false
+          },
+          media : {
+            enabled : false
+          },
+          "tree-nodes" : {
+            enabled : false
+          },
+        },
+        mcp : {
+          handlerOptions : {
+            verboseLogs : true,
+          },
+        },
+      }
+    ),
+    //Payload Cloud Plugin
     payloadCloudPlugin(),
     // Storage Supabase Config Plugin
     s3Storage({

@@ -1,4 +1,9 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, RichTextField } from 'payload'
+import {
+  convertLexicalToMarkdown,
+  editorConfigFactory,
+} from '@payloadcms/richtext-lexical'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { revalidatePath } from 'next/cache'
 
 
@@ -46,6 +51,25 @@ export const Posts: CollectionConfig = {
     }
   ],
   hooks: {
+    afterRead: [
+      async ({ doc, req, collection }) => {
+        if (req.payloadAPI === 'MCP' && doc.richText) {
+          const field = collection.fields.find(
+            (f) => 'name' in f && f.name === 'richText',
+          ) as RichTextField
+
+          if (field) {
+            doc.richText = convertLexicalToMarkdown({
+              data: doc.richText as SerializedEditorState,
+              editorConfig: editorConfigFactory.fromField({
+                field,
+              }),
+            })
+          }
+        }
+        return doc
+      },
+    ],
     afterChange: [
       ({ doc }) => {
         revalidatePath('/blog')
