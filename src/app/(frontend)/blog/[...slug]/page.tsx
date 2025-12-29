@@ -5,11 +5,36 @@ import { RichTextRender } from "@/components/RichTextRender";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BlogHeader } from "@/components/BlogHeader";
 import { extractHeadings } from "@/lib/headingUtils";
-import { Media } from "@/payload-types";
+import { Media, Post } from "@/payload-types";
+import { Metadata } from 'next';
 
 // Helper to check if preview-image is a Media object
 function isMedia(media: any): media is Media {
   return media && typeof media === 'object' && 'url' in media;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const slugString = slug.join('/');
+  
+  const payload = await getPayload({ config: configPromise });
+  const post = await payload.find({
+    collection: 'posts',
+    where: { slug: { equals: slugString } },
+  });
+
+  const postData = post.docs[0] as Post;
+
+  if (!postData) {
+    return {
+      title: 'Post no encontrado',
+    };
+  }
+
+  return {
+    title: postData.title,
+    description: postData.description || `Lee sobre ${postData.title} en el blog de Diego Cancino.`,
+  };
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) { // En Next.js 15, params es una Promise

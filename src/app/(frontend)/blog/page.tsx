@@ -6,6 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { BlurNavbar } from "@/components/BlurNavbar";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blog & Insights',
+  description: 'Artículos, tutoriales y reflexiones sobre desarrollo web, arquitectura de software e inteligencia artificial.',
+};
 
 // Helper type guard
 function isMedia(media: any): media is Media {

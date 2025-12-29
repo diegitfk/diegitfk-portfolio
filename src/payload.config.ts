@@ -23,9 +23,15 @@ import { CodeBlock } from './blocks/CodeBlock/config'
 import { AnimatedTabsBlock } from './blocks/AnimatedTabsBlock/config'
 import { MermaidBlock } from './blocks/MermaidBlock/config'
 
-
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const DATABASE_URI = process.env.NODE_ENV === 'production'
+  ? process.env.DATABASE_URI_POOL || process.env.DATABASE_URI_DIRECT
+  : process.env.DATABASE_URI_DIRECT;
+
+console.log(DATABASE_URI , process.env.NODE_ENV)
+
 
 export default buildConfig({
   admin: {
@@ -51,8 +57,11 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: DATABASE_URI,
+      max : process.env.NODE_ENV === 'production' ? 10 : 2,
+      idleTimeoutMillis : 30000
     },
+    push : process.env.NODE_ENV !== 'production',
   }),
   sharp,
   plugins: [
