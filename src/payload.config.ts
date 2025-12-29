@@ -17,6 +17,7 @@ import { Projects } from './collections/Projects'
 import { Posts } from './collections/Posts'
 import { TreeNodes } from './collections/TreeNodes'
 import { KnowledgeProject } from './collections/KnowledgeProjects'
+import { z } from 'zod'
 
 // Blocks Import
 import { FileTreeBlock } from './blocks/FileTreeBlock/config'
@@ -30,9 +31,6 @@ const dirname = path.dirname(filename)
 const DATABASE_URI = process.env.NODE_ENV === 'production'
   ? process.env.DATABASE_URI_POOL || process.env.DATABASE_URI_DIRECT
   : process.env.DATABASE_URI_DIRECT;
-
-console.log(DATABASE_URI , process.env.NODE_ENV)
-
 
 export default buildConfig({
   admin: {
@@ -135,6 +133,89 @@ export default buildConfig({
           handlerOptions : {
             verboseLogs : true,
           },
+          tools : [
+            {
+              name : "getContentKnowledgeProject",
+              description : "Obtiene el contenido en bruto (raw) de un archivo de la base de conocimientos técnica de un proyecto.",
+              parameters : z.object({
+                filename: z.string().describe("Nombre del archivo (ejemplo: 'cloud_proyect.md')")
+              }).shape,
+              handler : async (args , req) => {
+                const { payload } = req;
+                const { filename } = args as { filename: string };
+
+                try {
+                  const result = await payload.find({
+                    collection: 'knowledge_project',
+                    where: {
+                      filename: {
+                        equals: filename,
+                      },
+                    },
+                    limit: 1,
+                  });
+
+                  if (!result.docs || result.docs.length === 0) {
+                    return {
+                      content: [
+                        {
+                          type: "text",
+                          text: `No se encontró ningún archivo con el nombre "${filename}" en la base de conocimientos.`
+                        }
+                      ]
+                    };
+                  }
+
+                  const doc = result.docs[0];
+                  let fileUrl = doc.url;
+                  
+                  if (!fileUrl) {
+                    return {
+                      content: [
+                        {
+                          type: "text",
+                          text: "El documento existe pero no tiene una URL asociada."
+                        }
+                      ]
+                    };
+                  }
+
+                  // Si la URL es relativa, la convertimos en absoluta usando la información del servidor
+                  if (fileUrl.startsWith('/')) {
+                    const protocol = (req.protocol || 'http').replace(':', '');
+                    const host = req.headers.get('host') || 'localhost:3000';
+                    fileUrl = `${protocol}://${host}${fileUrl}`;
+                  }
+
+                  const response = await fetch(fileUrl);
+                  
+                  if (!response.ok) {
+                    throw new Error(`Error al obtener el archivo: ${response.statusText}`);
+                  }
+
+                  const content = await response.text();
+
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: content
+                      }
+                    ]
+                  };
+                } catch (error: any) {
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: `Hubo un problema al procesar la solicitud: ${error.message}`
+                      }
+                    ]
+                  };
+                }
+              }
+            }
+          ]
         },
       }
     ),

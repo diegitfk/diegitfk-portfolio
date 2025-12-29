@@ -26,19 +26,39 @@ const OPENAI_PAYLOAD = {
   apiKey : process.env.OPENAI_API_KEY || '',
 }
 
-async function loadMcpTools() {
-  const tools = await PortfolioMCPs.listTools();
-  console.log(tools)
-  return tools;
+async function loadMcpTools(retries = 3, delay = 2000): Promise<any> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.log(`Intentando cargar herramientas MCP (intento ${i + 1}/${retries})...`);
+      const tools = await PortfolioMCPs.listTools();
+      console.log('Herramientas MCP cargadas con éxito:', Object.keys(tools));
+      return tools;
+    } catch (error) {
+      console.error(`Error al cargar herramientas MCP (intento ${i + 1}):`, error);
+      if (i < retries - 1) {
+        console.log(`Reintentando en ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        // Aumentar el delay para el siguiente reintento (exponential backoff)
+        delay *= 2;
+      }
+    }
+  }
+  console.warn('No se pudieron cargar las herramientas MCP después de varios intentos. El agente funcionará con herramientas limitadas.');
+  return {};
 }
 
 const mcpTools = await loadMcpTools();
 const PayloadMcpTools = {
-  findProjects : mcpTools.payload_findProjects,
-  findKnowledgeProject : mcpTools.payload_findKnowledgeProject,
-  findPosts : mcpTools.payload_findPosts
+  findProjects : mcpTools?.payload_findProjects,
+  findKnowledgeProject : mcpTools?.payload_findKnowledgeProject,
+  findPosts : mcpTools?.payload_findPosts,
+  getContentKnowledgeProject : mcpTools?.payload_getContentKnowledgeProject
 }
 export type PayloadMcpUITools = InferUITools<typeof PayloadMcpTools>
+
+const filteredPayloadMcpTools = Object.fromEntries(
+  Object.entries(PayloadMcpTools).filter(([_, v]) => v != null)
+);
 
 export const WebPageAgent = new Agent({
     id: 'web-page-agent',
@@ -82,6 +102,7 @@ export const WebPageAgent = new Agent({
       apiKey : process.env.NVIDIA_API_KEY || '',
     },
     tools: {
-      ...PayloadMcpTools
+      ...filteredPayloadMcpTools,
+      thinkTool
     }
 });

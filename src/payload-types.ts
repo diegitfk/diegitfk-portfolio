@@ -309,6 +309,12 @@ export interface PayloadMcpApiKey {
      */
     find?: boolean | null;
   };
+  'payload-mcp-tool'?: {
+    /**
+     * Obtiene el contenido en bruto (raw) de un archivo de la base de conocimientos técnica de un proyecto.
+     */
+    getContentKnowledgeProject?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -540,6 +546,11 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
     | T
     | {
         find?: T;
+      };
+  'payload-mcp-tool'?:
+    | T
+    | {
+        getContentKnowledgeProject?: T;
       };
   updatedAt?: T;
   createdAt?: T;
