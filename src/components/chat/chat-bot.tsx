@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import mermaid from "mermaid";
 import { useTheme } from "next-themes";
+import { ToolInvocation } from "./tool-invocation";
+import type { ToolState } from "./tool-invocation";
+
 
 import {
   Conversation,
@@ -37,33 +40,7 @@ import {
 } from "@/components/ai-elements/prompt-input";
 
 
-// Componente Tool simplificado sin animaciones pesadas
-type SimpleToolState = "input-streaming" | "input-available" | "output-available" | "output-error";
 
-const SimpleToolBadge = memo(function SimpleToolBadge({ state }: { state: SimpleToolState }) {
-  const config = {
-    "input-streaming": { icon: Circle, label: "Pending", className: "" },
-    "input-available": { icon: Clock, label: "Running", className: "animate-pulse" },
-    "output-available": { icon: CheckCircle, label: "Completed", className: "text-green-600" },
-    "output-error": { icon: XCircle, label: "Error", className: "text-red-600" },
-  };
-  const { icon: Icon, label, className } = config[state];
-  return (
-    <Badge className="gap-1.5 rounded-full text-xs" variant="secondary">
-      <Icon className={cn("size-3", className)} />
-      {label}
-    </Badge>
-  );
-});
-
-const SimpleToolJson = memo(function SimpleToolJson({ data }: { data: Record<string, unknown> }) {
-  const jsonString = useMemo(() => JSON.stringify(data, null, 2), [data]);
-  return (
-    <pre className="text-xs p-2 bg-gray-800 text-gray-300 rounded overflow-x-auto max-h-32 overflow-y-auto">
-      <code>{jsonString}</code>
-    </pre>
-  );
-});
 
 // Tipos para los parts
 type PartAny = { 
@@ -206,7 +183,7 @@ const ReasoningPart = memo(function ReasoningPart({
   );
 });
 
-// Componente para tools - simplificado y memoizado
+// Componente para tools - usando ToolInvocation
 const ToolPart = memo(function ToolPart({ 
   toolName,
   state,
@@ -220,57 +197,18 @@ const ToolPart = memo(function ToolPart({
   input?: Record<string, unknown>;
   output?: Record<string, unknown>;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  let toolState: SimpleToolState = "input-streaming";
-  if (state === "input-streaming" || state === "partial-call") {
-    toolState = "input-streaming";
-  } else if (state === "input-available") {
-    toolState = "input-available";
-  } else if (state === "output-available" || output) {
-    toolState = "output-available";
-  } else if (state === "error" || state === "output-error") {
-    toolState = "output-error";
-  }
-
-  const hasInput = input && Object.keys(input).length > 0;
-  const hasOutput = !!output;
-
   return (
-    <div className="mb-3 w-full rounded-md border border-gray-700 bg-gray-900">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between gap-4 p-3 text-left"
-      >
-        <div className="flex items-center gap-2">
-          <Wrench className="size-4 text-gray-400" />
-          <span className="font-medium text-sm text-white">{toolName}</span>
-          <SimpleToolBadge state={toolState} />
-        </div>
-        <ChevronDown className={cn("size-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
-      </button>
-      {isOpen && (
-        <div className="border-t border-gray-700">
-          {hasInput && (
-            <div className="p-3 space-y-1">
-              <h4 className="font-medium text-gray-400 text-xs uppercase">Parameters</h4>
-              <SimpleToolJson data={input} />
-            </div>
-          )}
-          {hasOutput && (
-            <div className="p-3 space-y-1 border-t border-gray-700">
-              <h4 className="font-medium text-gray-400 text-xs uppercase">
-                {toolState === "output-error" ? "Error" : "Result"}
-              </h4>
-              <SimpleToolJson data={output} />
-            </div>
-          )}
-        </div>
-      )}
+    <div className="mb-3 w-full">
+      <ToolInvocation 
+        toolName={toolName as any}
+        state={state as ToolState}
+        input={input}
+        output={output}
+      />
     </div>
   );
 });
+
 
 // Componente principal para el contenido del mensaje
 const ChatMessageContent = memo(function ChatMessageContent({ 

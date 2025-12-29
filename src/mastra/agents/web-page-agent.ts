@@ -7,8 +7,8 @@ import {createOpenAI} from "@ai-sdk/openai";
 import {createGoogleGenerativeAI} from "@ai-sdk/google";
 import {createQwen} from 'qwen-ai-provider';
 import { thinkTool } from '@/mastra/tools/thinking_tool';
-import { projectInfoTool, projectKnowledgeTool , projectListTool } from '@/mastra/tools/projects_toolkit';
-
+import { PortfolioMCPs } from '@/mastra/mcp/portfolio';
+import { InferUITools } from "@mastra/core/tools";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,6 +25,21 @@ const OPENAI_PAYLOAD = {
   id : 'openai/gpt-5-mini',
   apiKey : process.env.OPENAI_API_KEY || '',
 }
+
+async function loadMcpTools() {
+  const tools = await PortfolioMCPs.listTools();
+  console.log(tools)
+  return tools;
+}
+
+const mcpTools = await loadMcpTools();
+const PayloadMcpTools = {
+  findProjects : mcpTools.payload_findProjects,
+  findKnowledgeProject : mcpTools.payload_findKnowledgeProject,
+  findPosts : mcpTools.payload_findPosts
+}
+export type PayloadMcpUITools = InferUITools<typeof PayloadMcpTools>
+
 export const WebPageAgent = new Agent({
     id: 'web-page-agent',
     name : "WebPageAgent",
@@ -66,9 +81,7 @@ export const WebPageAgent = new Agent({
       url : 'https://integrate.api.nvidia.com/v1',
       apiKey : process.env.NVIDIA_API_KEY || '',
     },
-    tools : { 
-      projectInfoTool , 
-      projectKnowledgeTool , 
-      projectListTool 
+    tools: {
+      ...PayloadMcpTools
     }
 });

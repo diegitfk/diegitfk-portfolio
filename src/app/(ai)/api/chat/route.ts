@@ -1,7 +1,6 @@
 import { mastra } from "@/mastra";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { toAISdkStream } from "@mastra/ai-sdk";
-
 // Función para truncar outputs largos de las tools
 function truncateToolOutput(part: Record<string, unknown>): Record<string, unknown> {
   if (!part.type || typeof part.type !== "string") return part;
@@ -53,6 +52,7 @@ function truncateToolOutput(part: Record<string, unknown>): Record<string, unkno
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+  
   const myAgent = mastra.getAgent("WebPageAgent");
   const stream = await myAgent.stream(
     messages , {
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           reasoningSummary : 'concise',
         },
       }
-    }
+    }, 
   );
 
   // Transform stream into AI SDK format and create UI messages stream
@@ -80,7 +80,6 @@ export async function POST(req: Request) {
       }
     },
   });
-
   // Create a Response that streams the UI message stream to the client
   return createUIMessageStreamResponse({
     stream: uiMessageStream,
