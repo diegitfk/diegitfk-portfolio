@@ -8,6 +8,12 @@ import { AboutSection } from '@/components/sections/about-section'
 import { HorizontalExperienceScroll, ExperienceSectionData } from '@/components/sections/experience-showcase'
 import { ContactSection } from '@/components/sections/contact-section'
 import { ChatBot } from '@/components/chat/chat-bot'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Diego Cancino | Full Stack Developer & AI Engineer',
+  description: 'Explora mi portafolio de desarrollo Full Stack, arquitecturas de software e ingeniería de Inteligencia Artificial.',
+};
 
 export default function HomePage() {
   const [showContent, setShowContent] = useState(false)

@@ -6,8 +6,25 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  title: {
+    default: 'Diego Cancino | Full Stack Developer & AI Engineer',
+    template: '%s | Diego Cancino',
+  },
+  description:
+    'Portfolio profesional de Diego Cancino, desarrollador Full Stack e Ingeniero de IA especializado en sistemas escalables, arquitecturas modernas y agentes inteligentes.',
+  keywords: [
+    'Diego Cancino',
+    'Full Stack Developer',
+    'AI Engineer',
+    'Next.js',
+    'Payload CMS',
+    'Software Architecture',
+    'Generative AI',
+    'React',
+    'Tailwind CSS',
+  ],
+  authors: [{ name: 'Diego Cancino' }],
+  creator: 'Diego Cancino',
 }
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
