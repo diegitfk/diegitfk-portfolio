@@ -4,3 +4,4 @@
 - fef6037: Nueva sección de blogs en el portfolio
 - 6c09241: Optimizaciones de SEO y revalidación programada via hook en Posts.
 - a5551cb: Resolucion de separacion SSR, SSC
+- 33ac7bb : `Deploy` configuración de conexión dinámica a base de datos y optimizar pool
