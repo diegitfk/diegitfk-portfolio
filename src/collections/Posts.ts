@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { revalidatePath } from 'next/cache'
+
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -43,4 +45,18 @@ export const Posts: CollectionConfig = {
       type : "richText",
     }
   ],
+  hooks: {
+    afterChange: [
+      ({ doc }) => {
+        revalidatePath('/blog')
+        revalidatePath(`/blog/${doc.slug}`)
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidatePath('/blog')
+        revalidatePath(`/blog/${doc.slug}`)
+      },
+    ],
+  },
 }

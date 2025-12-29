@@ -1,4 +1,6 @@
-import { clientSDK } from "@/utils/payloadClient";
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
+
 import { Post, Media } from "@/payload-types";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,7 +36,8 @@ export default async function BlogPage() {
   let posts: Post[] = [];
   
   try {
-    const postsData = await clientSDK.find({
+    const payload = await getPayload({ config: configPromise });
+    const postsData = await payload.find({
       collection: 'posts',
       limit: 100,
       depth: 1,
@@ -44,6 +47,7 @@ export default async function BlogPage() {
   } catch (error) {
     console.error("Error fetching posts:", error);
   }
+
 
   return (
     <section className="min-h-screen w-full bg-black text-white overflow-hidden">
