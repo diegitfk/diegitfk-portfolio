@@ -2,11 +2,6 @@ import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import {Agent} from "@mastra/core/agent";
-import {createOpenAICompatible} from "@ai-sdk/openai-compatible";
-import {createOpenAI} from "@ai-sdk/openai";
-import {createGoogleGenerativeAI} from "@ai-sdk/google";
-import {createQwen} from 'qwen-ai-provider';
-import { thinkTool } from '@/mastra/tools/thinking_tool';
 import { PortfolioMCPs } from '@/mastra/mcp/portfolio';
 import { InferUITools } from "@mastra/core/tools";
 
@@ -15,22 +10,12 @@ const __dirname = dirname(__filename);
 
 config({ path: join(__dirname, '../../../.env') });
 
-const NVIDIA_NIM_PAYLOAD = {
-  id : 'nvidia/moonshotai/kimi-k2-thinking',
-  url : 'https://integrate.api.nvidia.com/v1',
-  apiKey : process.env.NVIDIA_API_KEY || '',
-}
-
-const OPENAI_PAYLOAD = {
-  id : 'openai/gpt-5-mini',
-  apiKey : process.env.OPENAI_API_KEY || '',
-}
-
-async function loadMcpTools(retries = 3, delay = 2000): Promise<any> {
+async function loadMcpTools(retries = 10, delay = 3000): Promise<any> {
   for (let i = 0; i < retries; i++) {
     try {
       console.log(`Intentando cargar herramientas MCP (intento ${i + 1}/${retries})...`);
       const tools = await PortfolioMCPs.listTools();
+      console.log(tools)
       console.log('Herramientas MCP cargadas con éxito:', Object.keys(tools));
       return tools;
     } catch (error) {
@@ -52,19 +37,29 @@ const PayloadMcpTools = {
   findProjects : mcpTools?.payload_findProjects,
   findKnowledgeProject : mcpTools?.payload_findKnowledgeProject,
   findPosts : mcpTools?.payload_findPosts,
-  getContentKnowledgeProject : mcpTools?.payload_getContentKnowledgeProject
+  getContentKnowledgeProject : mcpTools?.payload_getContentKnowledgeProject,
 }
+const MermaidMcpTools = {
+  mermaid_validate_and_render_mermaid_diagram : mcpTools?.mermaid_validate_and_render_mermaid_diagram,
+}
+
 export type PayloadMcpUITools = InferUITools<typeof PayloadMcpTools>
+export type MermaidMcpUITools = InferUITools<typeof MermaidMcpTools>
 
 const filteredPayloadMcpTools = Object.fromEntries(
   Object.entries(PayloadMcpTools).filter(([_, v]) => v != null)
-);
+) as any;
+
+const filteredMermaidMcpTools = Object.fromEntries(
+  Object.entries(MermaidMcpTools).filter(([_, v]) => v != null)
+) as any; 
 
 export const WebPageAgent = new Agent({
     id: 'web-page-agent',
     name : "WebPageAgent",
     instructions : `
-      Eres Diego, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. Este es tu portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
+      Eres asistente de Diego Cancino, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. 
+      Este es su portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
 
       ## Tu personalidad y estilo:
       - **Profesional pero accesible**: Habla de manera clara, directa y amigable, sin ser demasiado formal
@@ -85,6 +80,9 @@ export const WebPageAgent = new Agent({
       - **Responde preguntas técnicas** con explicaciones claras y breves
       - **Ofrece ayuda** para navegar por el sitio o entender tus proyectos
       - **Mantén conversaciones naturales y concisas** - ve directo al punto
+      
+      ## Acciones de conocimiento:
+      - **Informate bien**: Utiliza las herramientas que tienes a disposición para responder informado sobre la solicitud del usuario.
 
       ## Límites importantes:
       - No inventes información sobre proyectos o experiencia que no esté en el portfolio
@@ -93,6 +91,13 @@ export const WebPageAgent = new Agent({
       - Sé respetuoso y profesional en todas las interacciones
       - **Sé breve**: No respondas de manera extensa, ve directo al punto
 
+      IMPORTANTE: CUANDO EL USUARIO TE SOLICITE O TU DECIDAS HACER DIAGRAMAS MERMAIDJS:
+      1. Instruyete bien sobre la sintaxis con la herramienta **mermaidSkillTool**.
+      2. Genera el código del diagrama.
+      3. ANTES de mostrárselo al usuario, VALIDA el código usando **mermaidValidationTool**.
+      4. Si la validación falla ({ isValid: false }), corrige el código basándote en el error retornado y vuelve a validar (Paso 3).
+      5. Repite este ciclo de validación hasta que el diagrama sea correcto ({ isValid: true }).
+      6. Solo entonces muestra el diagrama final al usuario.
       ## Tu objetivo principal:
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
@@ -103,6 +108,6 @@ export const WebPageAgent = new Agent({
     },
     tools: {
       ...filteredPayloadMcpTools,
-      thinkTool
-    }
+      ...filteredMermaidMcpTools,
+    },
 });
