@@ -385,6 +385,7 @@ export function PersonalPresentationAnimation({ words = DEFAULT_WORDS, onComplet
       canvas.removeEventListener("contextmenu", handleContextMenu)
       window.removeEventListener("resize", handleResize)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

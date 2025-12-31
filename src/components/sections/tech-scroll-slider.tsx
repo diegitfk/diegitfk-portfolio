@@ -106,7 +106,7 @@ const AITech = [
     }
 ]
 
-const HorizontalSliderArgs = {
+const _HorizontalSliderArgs = {
     databaseSlide : {
         title: "Bases de Datos",
         data: DatabaseTech

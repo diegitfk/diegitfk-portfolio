@@ -4,8 +4,8 @@ import { useState, memo, useMemo, useCallback, useDeferredValue, useEffect } fro
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage, ChatStatus } from "ai";
-import { Bot, X, MessageCircle, CheckCircle, Clock, Circle, XCircle, Wrench, ChevronDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Bot, X, MessageCircle } from "lucide-react";
+// import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import mermaid from "mermaid";
@@ -200,7 +200,7 @@ const ToolPart = memo(function ToolPart({
   return (
     <div className="mb-3 w-full">
       <ToolInvocation 
-        toolName={toolName as any}
+        toolName={toolName as string}
         state={state as ToolState}
         input={input}
         output={output}

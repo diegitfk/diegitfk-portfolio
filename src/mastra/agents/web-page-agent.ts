@@ -1,57 +1,22 @@
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import {Agent} from "@mastra/core/agent";
-import { Memory } from "@mastra/memory";
-import { PortfolioMCPs } from '@/mastra/mcp/portfolio';
-import { InferUITools } from "@mastra/core/tools";
+import { Agent } from "@mastra/core/agent";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 config({ path: join(__dirname, '../../../.env') });
 
-async function loadMcpTools(retries = 10, delay = 3000): Promise<any> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      console.log(`Intentando cargar herramientas MCP (intento ${i + 1}/${retries})...`);
-      const tools = await PortfolioMCPs.listTools();
-      console.log(tools)
-      console.log('Herramientas MCP cargadas con éxito:', Object.keys(tools));
-      return tools;
-    } catch (error) {
-      console.error(`Error al cargar herramientas MCP (intento ${i + 1}):`, error);
-      if (i < retries - 1) {
-        console.log(`Reintentando en ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        // Aumentar el delay para el siguiente reintento (exponential backoff)
-        delay *= 2;
-      }
-    }
-  }
-  console.warn('No se pudieron cargar las herramientas MCP después de varios intentos. El agente funcionará con herramientas limitadas.');
-  return {};
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PayloadMcpUITools = Record<string, any>;
 
-const mcpTools = await loadMcpTools();
-const PayloadMcpTools = {
-  findProjects : mcpTools?.payload_findProjects,
-  findKnowledgeProject : mcpTools?.payload_findKnowledgeProject,
-  findPosts : mcpTools?.payload_findPosts,
-  getContentKnowledgeProject : mcpTools?.payload_getContentKnowledgeProject,
-}
-
-
-export type PayloadMcpUITools = InferUITools<typeof PayloadMcpTools>
-
-const filteredPayloadMcpTools = Object.fromEntries(
-  Object.entries(PayloadMcpTools).filter(([_, v]) => v != null)
-) as any;
-
-export const WebPageAgent = new Agent({
+// Agent configuration
+// Tools are loaded dynamically at runtime via getToolsets() in the chat route
+const agentConfig = {
     id: 'web-page-agent',
-    name : "WebPageAgent",
-    instructions : `
+    name: 'WebPageAgent',
+    instructions: `
       Eres asistente de Diego Cancino, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. 
       Este es su portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
 
@@ -90,12 +55,15 @@ export const WebPageAgent = new Agent({
       ## Tu objetivo principal:
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
-    model : {
-      id : 'nvidia/qwen/qwen3-next-80b-a3b-thinking',
-      url : 'https://integrate.api.nvidia.com/v1',
-      apiKey : process.env.NVIDIA_API_KEY || '',
+    model: {
+      id: 'nvidia/qwen/qwen3-next-80b-a3b-thinking' as const,
+      url: 'https://integrate.api.nvidia.com/v1',
+      apiKey: process.env.NVIDIA_API_KEY || '',
     },
-    tools: {
-      ...filteredPayloadMcpTools,
-    }
+} as const;
+
+// Export agent without tools - tools are loaded dynamically via getToolsets() in the chat route
+export const WebPageAgent = new Agent({
+  ...agentConfig,
+  tools: {},
 });

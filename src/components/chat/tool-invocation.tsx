@@ -30,8 +30,8 @@ export type ToolInvocationProps =
   | {
       toolName: string;
       state: ToolState;
-      input?: any;
-      output?: any;
+      input?: Record<string, unknown>;
+      output?: Record<string, unknown>;
     };
 
 export function ToolInvocation({
@@ -41,7 +41,7 @@ export function ToolInvocation({
   output,
 }: ToolInvocationProps) {
   // Map internal ToolState to ToolUIPart["state"]
-  const getMappedState = (s: ToolState): any => {
+  const getMappedState = (s: ToolState): "input-streaming" | "input-available" | "output-available" | "output-error" | ToolState => {
     switch (s) {
       case "call":
         return "input-available";
@@ -65,7 +65,7 @@ export function ToolInvocation({
 
   return (
     <Tool>
-      <ToolHeader title={toolName} type={`tool-${toolName}` as any} state={mappedState} />
+      <ToolHeader title={toolName} type={`tool-${toolName}` as `tool-${string}`} state={mappedState as "input-streaming" | "input-available" | "output-available" | "output-error"} />
       <ToolContent>
         {input && Object.keys(input).length > 0 && <ToolInput input={input} />}
         {output && (

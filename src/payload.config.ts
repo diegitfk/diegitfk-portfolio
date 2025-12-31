@@ -41,7 +41,7 @@ export default buildConfig({
   },
   collections: [Users, Media, Projects, Posts, TreeNodes , KnowledgeProject],
   editor: lexicalEditor({
-    features: ({ defaultFeatures, rootFeatures }) => [
+    features: ({ defaultFeatures }) => [
       ...defaultFeatures,
       // This is incredibly powerful. You can re-use your Payload blocks
       // directly in the Lexical editor as follows:
@@ -203,7 +203,8 @@ export default buildConfig({
                       }
                     ]
                   };
-                } catch (error: any) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } catch (error: any) {
                   return {
                     content: [
                       {

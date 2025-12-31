@@ -1,6 +1,6 @@
 import React from 'react'
 import { Inter } from 'next/font/google';
-import { cn } from "@/lib/utils"; // Tu utilidad para classnames
+// import { cn } from "@/lib/utils"; // Tu utilidad para classnames
 import '../globals.css';
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
@@ -26,7 +26,7 @@ export const metadata = {
   authors: [{ name: 'Diego Cancino' }],
   creator: 'Diego Cancino',
 }
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const _inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props

@@ -92,9 +92,10 @@ export const MermaidDiagram: React.FC<MermaidBlockProps> = ({ code }) => {
     }
 
     // Cleanup function
+    const container = containerRef.current;
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = ''
+      if (container) {
+        container.innerHTML = ''
       }
     }
   }, [code, currentTheme]) // Re-renderizar cuando cambie el código o el tema

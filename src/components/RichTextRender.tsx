@@ -17,6 +17,7 @@ import { generateHeadingId } from '@/lib/headingUtils'
 type RichTextNode = {
   type: string
   children?: RichTextNode[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 
@@ -42,7 +43,7 @@ interface RichTextRenderProps {
 
 // --- Funciones de Serialización ---
 
-const serializeText = (nodes: RichTextNode[], skipAnimation = false): React.ReactNode => {
+const serializeText = (nodes: RichTextNode[], _skipAnimation = false): React.ReactNode => {
   return nodes.map((node, i) => {
     if (node.type === 'text') {
       const textNode = node as unknown as TextNode
@@ -88,7 +89,7 @@ const serializeText = (nodes: RichTextNode[], skipAnimation = false): React.Reac
   })
 }
 
-const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.ReactNode => {
+const serializeNodes = (nodes: RichTextNode[], _skipAnimation = false): React.ReactNode => {
   return nodes.map((node, i) => {
     if (!node) return null
 
@@ -105,7 +106,9 @@ const serializeNodes = (nodes: RichTextNode[], skipAnimation = false): React.Rea
         }
         // Generar ID para el heading
         const headingText = node.children
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ?.filter((child: any) => child.type === 'text')
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map((child: any) => child.text)
           .join('') || ''
         const headingId = generateHeadingId(headingText)

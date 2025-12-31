@@ -1,6 +1,7 @@
-import { mastra } from "@/mastra";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { toAISdkStream } from "@mastra/ai-sdk";
+import { mastra } from "@/mastra";
+import { PortfolioMCPs } from "@/mastra/mcp/portfolio";
 // Función para truncar outputs largos de las tools
 function truncateToolOutput(part: Record<string, unknown>): Record<string, unknown> {
   if (!part.type || typeof part.type !== "string") return part;
@@ -53,13 +54,27 @@ function truncateToolOutput(part: Record<string, unknown>): Record<string, unkno
 export async function POST(req: Request) {
   const { messages } = await req.json();
   
+  // Get agent and load MCP tools dynamically using toolsets
   const myAgent = mastra.getAgent("WebPageAgent");
+  
+  // Load MCP toolsets at runtime (not at build time)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let toolsets: Record<string, any> = {};
+  try {
+    // Use listToolsets() for dynamic tool loading per request
+    toolsets = await PortfolioMCPs.listToolsets();
+    console.log('MCP toolsets loaded:', Object.keys(toolsets));
+  } catch (error) {
+    console.warn('Failed to load MCP toolsets, agent will run without MCP tools:', error);
+  }
+  
   const stream = await myAgent.stream(
-    messages , {
-      providerOptions : {
-        openai:{
-          reasoningEffort : 'medium',
-          reasoningSummary : 'concise',
+    messages, {
+      toolsets,
+      providerOptions: {
+        openai: {
+          reasoningEffort: 'medium',
+          reasoningSummary: 'concise',
         },
       }
     }, 

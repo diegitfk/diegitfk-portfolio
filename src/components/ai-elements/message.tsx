@@ -20,7 +20,7 @@ import {
   XIcon,
 } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useEffect, useMemo, useState } from "react";
 import { Streamdown } from "streamdown";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
@@ -190,7 +190,10 @@ export const MessageBranchContent = ({
   ...props
 }: MessageBranchContentProps) => {
   const { currentBranch, setBranches, branches } = useMessageBranch();
-  const childrenArray = Array.isArray(children) ? children : [children];
+  const childrenArray = useMemo(
+    () => Array.isArray(children) ? children : [children],
+    [children]
+  );
 
   // Use useEffect to update branches when they change
   useEffect(() => {
@@ -218,8 +221,8 @@ export type MessageBranchSelectorProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export const MessageBranchSelector = ({
-  className,
-  from,
+  className: _className,
+  from: _from,
   ...props
 }: MessageBranchSelectorProps) => {
   const { totalBranches } = useMessageBranch();
@@ -265,7 +268,7 @@ export type MessageBranchNextProps = ComponentProps<typeof Button>;
 
 export const MessageBranchNext = ({
   children,
-  className,
+  className: _className,
   ...props
 }: MessageBranchNextProps) => {
   const { goToNext, totalBranches } = useMessageBranch();
@@ -351,6 +354,7 @@ export function MessageAttachment({
     >
       {isImage ? (
         <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt={filename || "attachment"}
             className="size-full object-cover"

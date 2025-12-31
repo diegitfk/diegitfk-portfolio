@@ -4,7 +4,7 @@ import React, { useCallback, useMemo } from 'react'
 import { File, Folder, Tree, type TreeViewElement } from '@/components/ui/file-tree'
 import type { FileTreeBlockType, TreeNode } from '@/payload-types'
 
-interface FileTreeBlockProps extends FileTreeBlockType {}
+type FileTreeBlockProps = FileTreeBlockType;
 
 // Helper para filtrar nodos populados
 const isPopulatedTreeNode = (node: number | TreeNode): node is TreeNode => {

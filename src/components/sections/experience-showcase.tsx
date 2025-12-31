@@ -84,7 +84,7 @@ interface PerspectiveContainerProps {
   children: ReactNode;
 }
 
-function PerspectiveContainer({ children }: PerspectiveContainerProps) {
+function _PerspectiveContainer({ children }: PerspectiveContainerProps) {
   return (
     <div
       className="relative w-full flex items-center justify-center"

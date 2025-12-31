@@ -59,6 +59,7 @@ const nextConfig = {
     webpackConfig.module.rules.push({
       test: /\.svg$/,
       issuer: /\.[jt]sx?$/,
+      exclude: /node_modules/, // Excluir dependencias externas
       use: [
         {
           loader: "@svgr/webpack",
@@ -75,6 +76,13 @@ const nextConfig = {
       test: /\.svg$/,
       type: "asset/resource",
       resourceQuery: /url/, // permite usar icon.svg?url
+    });
+
+    // Regla obligatoria para SVGs en node_modules
+    webpackConfig.module.rules.push({
+      test: /\.svg$/,
+      include: /node_modules/,
+      type: 'asset/resource',
     });
 
     // Modificar la regla de archivos para ignorar archivos *.svg ya que tenemos reglas personalizadas

@@ -132,6 +132,7 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
       if (initialSelectedId) {
         expandSpecificTargetedElements(elements, initialSelectedId)
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialSelectedId, elements])
 
     const direction = dir === "rtl" ? "rtl" : "ltr"
@@ -220,7 +221,7 @@ const Folder = forwardRef<
       children,
       ...props
     },
-    ref
+    _ref
   ) => {
     const {
       direction,
@@ -292,7 +293,7 @@ const File = forwardRef<
     {
       value,
       className,
-      handleSelect,
+      handleSelect: _handleSelect,
       isSelectable = true,
       isSelect,
       fileIcon,
@@ -335,7 +336,7 @@ const CollapseButton = forwardRef<
     elements: TreeViewElement[]
     expandAll?: boolean
   } & React.HTMLAttributes<HTMLButtonElement>
->(({ className, elements, expandAll = false, children, ...props }, ref) => {
+>(({ className: _className, elements, expandAll = false, children, ...props }, ref) => {
   const { expandedItems, setExpandedItems } = useTree()
 
   const expendAllTree = useCallback((elements: TreeViewElement[]) => {
@@ -348,10 +349,12 @@ const CollapseButton = forwardRef<
     }
 
     elements.forEach(expandTree)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const closeAll = useCallback(() => {
     setExpandedItems?.([])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -359,6 +362,7 @@ const CollapseButton = forwardRef<
     if (expandAll) {
       expendAllTree(elements)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandAll])
 
   return (
