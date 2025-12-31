@@ -78,7 +78,7 @@ export function ContactSection() {
             </span>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              Let's build
+              Let&apos;s build
               <br />
               the <span className="text-gray-500">future.</span>
             </h2>

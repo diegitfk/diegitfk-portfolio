@@ -112,6 +112,7 @@ export const PixelImage = ({
   if (!isMounted) {
     return (
       <div className={cn("relative select-none", className || "h-72 w-72 md:h-96 md:w-96")}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt="Loading..."
@@ -141,6 +142,7 @@ export const PixelImage = ({
             transitionDuration: `${pixelFadeInDuration}ms`,
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
             alt={`Pixel image piece ${index + 1}`}

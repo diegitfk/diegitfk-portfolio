@@ -9,8 +9,8 @@ import { Media, Post } from "@/payload-types";
 import { Metadata } from 'next';
 
 // Helper to check if preview-image is a Media object
-function isMedia(media: any): media is Media {
-  return media && typeof media === 'object' && 'url' in media;
+function isMedia(media: unknown): media is Media {
+  return media !== null && typeof media === 'object' && 'url' in media;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {

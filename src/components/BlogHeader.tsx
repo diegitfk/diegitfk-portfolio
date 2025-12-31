@@ -15,7 +15,7 @@ interface BlogHeaderProps {
 const PIXEL_EFFECT_DURATION = 1.5 // segundos
 
 export const BlogHeader: React.FC<BlogHeaderProps> = ({ title, previewImage }) => {
-  const [isMounted, setIsMounted] = useState(false)
+  const [, setIsMounted] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)

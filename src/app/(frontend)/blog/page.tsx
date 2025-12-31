@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 };
 
 // Helper type guard
-function isMedia(media: any): media is Media {
-  return media && typeof media === 'object' && ('url' in media);
+function isMedia(media: unknown): media is Media {
+  return media !== null && typeof media === 'object' && 'url' in media;
 }
 
 // Function to calculate grid spans based on index to create a Bento effect

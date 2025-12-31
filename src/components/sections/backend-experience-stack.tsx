@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, useInView } from "motion/react"
 import { cn } from "@/lib/utils"
 import { MicroservicesArchitecture } from "./microservices-architecture"

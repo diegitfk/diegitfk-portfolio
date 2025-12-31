@@ -8,6 +8,7 @@ type RichTextNode = {
   type: string
   children?: RichTextNode[]
   tag?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 
@@ -37,7 +38,9 @@ export function extractHeadings(content: { root: { children: RichTextNode[] } })
   const processNode = (node: RichTextNode) => {
     if (node.type === 'heading' && node.children) {
       const text = node.children
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((child: any) => child.type === 'text')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .map((child: any) => child.text)
         .join('')
       

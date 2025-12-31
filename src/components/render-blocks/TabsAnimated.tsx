@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import type { AnimatedTabsBlock } from "@/payload-types";
 
-interface TabsAnimatedProps extends AnimatedTabsBlock {}
+type TabsAnimatedProps = AnimatedTabsBlock;
 
 export const TabsAnimatedComponent: React.FC<TabsAnimatedProps> = ({ tabs }) => {
   // Validar que existan tabs

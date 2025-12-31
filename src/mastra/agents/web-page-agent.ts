@@ -1,35 +1,24 @@
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import {Agent} from "@mastra/core/agent";
-import {createOpenAICompatible} from "@ai-sdk/openai-compatible";
-import {createOpenAI} from "@ai-sdk/openai";
-import {createGoogleGenerativeAI} from "@ai-sdk/google";
-import {createQwen} from 'qwen-ai-provider';
-import { thinkTool } from '@/mastra/tools/thinking_tool';
-import { projectInfoTool, projectKnowledgeTool , projectListTool } from '@/mastra/tools/projects_toolkit';
-
+import { Agent } from "@mastra/core/agent";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 config({ path: join(__dirname, '../../../.env') });
 
-const NVIDIA_NIM_PAYLOAD = {
-  id : 'nvidia/moonshotai/kimi-k2-thinking',
-  url : 'https://integrate.api.nvidia.com/v1',
-  apiKey : process.env.NVIDIA_API_KEY || '',
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PayloadMcpUITools = Record<string, any>;
 
-const OPENAI_PAYLOAD = {
-  id : 'openai/gpt-5-mini',
-  apiKey : process.env.OPENAI_API_KEY || '',
-}
-export const WebPageAgent = new Agent({
+// Agent configuration
+// Tools are loaded dynamically at runtime via getToolsets() in the chat route
+const agentConfig = {
     id: 'web-page-agent',
-    name : "WebPageAgent",
-    instructions : `
-      Eres Diego, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. Este es tu portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
+    name: 'WebPageAgent',
+    instructions: `
+      Eres asistente de Diego Cancino, un desarrollador full-stack apasionado por crear experiencias web innovadoras y soluciones tecnológicas elegantes. 
+      Este es su portfolio personal, y estás aquí para ayudar a los visitantes a conocer mejor tu trabajo y expertise.
 
       ## Tu personalidad y estilo:
       - **Profesional pero accesible**: Habla de manera clara, directa y amigable, sin ser demasiado formal
@@ -50,6 +39,9 @@ export const WebPageAgent = new Agent({
       - **Responde preguntas técnicas** con explicaciones claras y breves
       - **Ofrece ayuda** para navegar por el sitio o entender tus proyectos
       - **Mantén conversaciones naturales y concisas** - ve directo al punto
+      
+      ## Acciones de conocimiento:
+      - **Informate bien**: Utiliza las herramientas que tienes a disposición para responder informado sobre la solicitud del usuario.
 
       ## Límites importantes:
       - No inventes información sobre proyectos o experiencia que no esté en el portfolio
@@ -58,17 +50,20 @@ export const WebPageAgent = new Agent({
       - Sé respetuoso y profesional en todas las interacciones
       - **Sé breve**: No respondas de manera extensa, ve directo al punto
 
+      IMPORTANTE: CUANDO EL USUARIO TE SOLICITE O TU DECIDAS HACER DIAGRAMAS MERMAID, utiliza las herramientas
+      relacionadas a este ambito en especifico, y luego entrega explicaciones SIEMPRE en ESPAÑOL. 
       ## Tu objetivo principal:
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
-    model : {
-      id : 'nvidia/openai/gpt-oss-120b',
-      url : 'https://integrate.api.nvidia.com/v1',
-      apiKey : process.env.NVIDIA_API_KEY || '',
+    model: {
+      id: 'nvidia/qwen/qwen3-next-80b-a3b-thinking' as const,
+      url: 'https://integrate.api.nvidia.com/v1',
+      apiKey: process.env.NVIDIA_API_KEY || '',
     },
-    tools : { 
-      projectInfoTool , 
-      projectKnowledgeTool , 
-      projectListTool 
-    }
+} as const;
+
+// Export agent without tools - tools are loaded dynamically via getToolsets() in the chat route
+export const WebPageAgent = new Agent({
+  ...agentConfig,
+  tools: {},
 });
