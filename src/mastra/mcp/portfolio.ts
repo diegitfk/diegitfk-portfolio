@@ -13,8 +13,5 @@ export const PortfolioMCPs = new MCPClient({
               }
           }
       },
-      mermaid : {
-        url : new URL("https://mcp.mermaid.ai/mcp")
-      }
     },
   });

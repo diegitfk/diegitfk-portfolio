@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import {Agent} from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
 import { PortfolioMCPs } from '@/mastra/mcp/portfolio';
 import { InferUITools } from "@mastra/core/tools";
 
@@ -39,20 +40,13 @@ const PayloadMcpTools = {
   findPosts : mcpTools?.payload_findPosts,
   getContentKnowledgeProject : mcpTools?.payload_getContentKnowledgeProject,
 }
-const MermaidMcpTools = {
-  mermaid_validate_and_render_mermaid_diagram : mcpTools?.mermaid_validate_and_render_mermaid_diagram,
-}
+
 
 export type PayloadMcpUITools = InferUITools<typeof PayloadMcpTools>
-export type MermaidMcpUITools = InferUITools<typeof MermaidMcpTools>
 
 const filteredPayloadMcpTools = Object.fromEntries(
   Object.entries(PayloadMcpTools).filter(([_, v]) => v != null)
 ) as any;
-
-const filteredMermaidMcpTools = Object.fromEntries(
-  Object.entries(MermaidMcpTools).filter(([_, v]) => v != null)
-) as any; 
 
 export const WebPageAgent = new Agent({
     id: 'web-page-agent',
@@ -91,23 +85,17 @@ export const WebPageAgent = new Agent({
       - Sé respetuoso y profesional en todas las interacciones
       - **Sé breve**: No respondas de manera extensa, ve directo al punto
 
-      IMPORTANTE: CUANDO EL USUARIO TE SOLICITE O TU DECIDAS HACER DIAGRAMAS MERMAIDJS:
-      1. Instruyete bien sobre la sintaxis con la herramienta **mermaidSkillTool**.
-      2. Genera el código del diagrama.
-      3. ANTES de mostrárselo al usuario, VALIDA el código usando **mermaidValidationTool**.
-      4. Si la validación falla ({ isValid: false }), corrige el código basándote en el error retornado y vuelve a validar (Paso 3).
-      5. Repite este ciclo de validación hasta que el diagrama sea correcto ({ isValid: true }).
-      6. Solo entonces muestra el diagrama final al usuario.
+      IMPORTANTE: CUANDO EL USUARIO TE SOLICITE O TU DECIDAS HACER DIAGRAMAS MERMAID, utiliza las herramientas
+      relacionadas a este ambito en especifico, y luego entrega explicaciones SIEMPRE en ESPAÑOL. 
       ## Tu objetivo principal:
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
     model : {
-      id : 'nvidia/openai/gpt-oss-120b',
+      id : 'nvidia/qwen/qwen3-next-80b-a3b-thinking',
       url : 'https://integrate.api.nvidia.com/v1',
       apiKey : process.env.NVIDIA_API_KEY || '',
     },
     tools: {
       ...filteredPayloadMcpTools,
-      ...filteredMermaidMcpTools,
-    },
+    }
 });
