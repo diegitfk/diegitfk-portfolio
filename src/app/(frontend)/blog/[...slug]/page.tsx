@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const payload = await getPayload({ config: configPromise });
   const post = await payload.find({
     collection: 'posts',
-    where: { slug: { equals: slugString } },
+    where: { slug: { equals: slugString } , _status : {equals : "published"}},
   });
 
   const postData = post.docs[0] as Post;

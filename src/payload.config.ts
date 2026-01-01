@@ -57,7 +57,8 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: DATABASE_URI,
-      max : process.env.NODE_ENV === 'production' ? 10 : 2,
+      // Increase connection limit in dev to prevent hangs during revalidation/HMR
+      max : process.env.NODE_ENV === 'production' ? 10 : 5, 
       idleTimeoutMillis : 30000
     },
     push : process.env.NODE_ENV !== 'production',

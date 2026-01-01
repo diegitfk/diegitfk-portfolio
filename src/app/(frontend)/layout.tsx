@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import '../globals.css';
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { IntroProvider } from "@/providers/intro-provider"
+import { DynamicNavbar } from "@/components/layout/dynamic-navbar"
 
 export const metadata = {
   title: {
@@ -40,8 +42,19 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
+        <IntroProvider>
+          <DynamicNavbar 
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Proyectos", href: "/#projects" },
+              { label: "Blog", href: "/blog" },
+            ]}
+            ctaLabel="Contacto"
+            ctaHref="/#contact"
+          />
           {children}
           <Toaster position="top-right" />
+        </IntroProvider>
         </ThemeProvider>
       </body>
     </html>

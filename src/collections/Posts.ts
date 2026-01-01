@@ -15,6 +15,9 @@ export const Posts: CollectionConfig = {
   access: {
     read: () => true,
   },
+  versions : {
+    drafts : true,
+  },
   fields: [
     {
       name: 'title',
@@ -71,13 +74,23 @@ export const Posts: CollectionConfig = {
       },
     ],
     afterChange: [
-      ({ doc }) => {
+      ({ doc, req }) => { // 1. Agregamos 'req' a los argumentos
+        
+        // 2. AGREGAMOS ESTA VALIDACIÓN:
+        // Si el contexto tiene la bandera 'skipRevalidate', no hacemos nada más.
+        if (req.context?.skipRevalidate) {
+          return doc
+        }
+
+        // El código normal sigue aquí...
         revalidatePath('/blog')
         revalidatePath(`/blog/${doc.slug}`)
       },
     ],
     afterDelete: [
-      ({ doc }) => {
+      ({ doc, req }) => { // Haz lo mismo en afterDelete por si acaso
+        if (req.context?.skipRevalidate) return doc
+        
         revalidatePath('/blog')
         revalidatePath(`/blog/${doc.slug}`)
       },

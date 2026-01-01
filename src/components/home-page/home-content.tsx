@@ -1,39 +1,31 @@
 "use client"
 
-import { useState } from 'react'
+import { useIntro } from '@/providers/intro-provider'
 import { PersonalPresentationAnimation } from '@/components/sections/text-effect-section'
 import { HeroSection } from '@/components/sections/hero-section'
-import { BlurNavbar } from '@/components/BlurNavbar'
 import { AboutSection } from '@/components/sections/about-section'
 import { HorizontalExperienceScroll } from '@/components/sections/experience-showcase'
 import { ContactSection } from '@/components/sections/contact-section'
 import { ChatBot } from '@/components/chat/chat-bot'
 
 export function HomeContent() {
-  const [showContent, setShowContent] = useState(false)
+  const { hasIntroRun, setHasIntroRun, isLoaded } = useIntro()
+
+  if (!isLoaded) return null
 
   return (
     <>
-      {!showContent && (
+      {!hasIntroRun && (
         <div className="flex flex-col items-center justify-center">
           <PersonalPresentationAnimation 
             words={["Hola, Aquí", "Diego Cancino"]} 
-            onComplete={() => setShowContent(true)}
+            onComplete={() => setHasIntroRun(true)}
           />
         </div>
       )}
 
-      {showContent && (
+      {hasIntroRun && (
         <>
-          <BlurNavbar 
-            items={[
-              { label: "Home", href: "#" },
-              { label: "Proyectos", href: "#projects" },
-              { label: "Blog", href: "/blog" },
-            ]}
-            ctaLabel="Contacto"
-            ctaHref="#contact"
-          />
           <HeroSection />
           <AboutSection>
             <HorizontalExperienceScroll 
@@ -91,7 +83,7 @@ export function HomeContent() {
             />
           </AboutSection>
           <ContactSection />
-          <ChatBot visible={showContent} />
+          <ChatBot visible={hasIntroRun} />
         </>
       )}
     </>

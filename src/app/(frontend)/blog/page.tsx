@@ -5,7 +5,6 @@ import { Post, Media } from "@/payload-types";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { BlurNavbar } from "@/components/BlurNavbar";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -48,6 +47,11 @@ export default async function BlogPage() {
       limit: 100,
       depth: 1,
       sort: '-createdAt',
+      where : {
+        _status : {
+          equals : "published"
+        }
+      }
     });
     posts = postsData.docs;
   } catch (error) {
@@ -58,15 +62,8 @@ export default async function BlogPage() {
   return (
     <section className="min-h-screen w-full bg-black text-white overflow-hidden">
       {/* Navigation */}
-      <BlurNavbar 
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Proyectos", href: "/projects" },
-          { label: "Blog", href: "/blog" },
-        ]}
-        ctaLabel="Contacto"
-        ctaHref="/#contact"
-      />
+      {/* Navigation - Inherited from Root Layout */}
+
 
       {/* Content */}
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-12">
