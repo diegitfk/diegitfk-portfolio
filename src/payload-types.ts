@@ -200,13 +200,78 @@ export interface Media {
 export interface Project {
   id: number;
   name: string;
+  /**
+   * URL slug para el proyecto (ej: mi-proyecto-increible)
+   */
+  slug: string;
   description: string;
-  github_repo?: string | null;
+  link_github?: string | null;
+  link_live_demo?: string | null;
   image_repo?: (number | null) | Media;
   project_type: 'backend' | 'frontend' | 'full-stack';
+  project_status: 'production' | 'mvp' | 'rnd';
+  /**
+   * Marcar como proyecto destacado para mostrar en tamaño grande
+   */
+  is_featured?: boolean | null;
+  /**
+   * Selecciona las tecnologías usadas en el proyecto
+   */
+  tech_stack?:
+    | (
+        | 'react'
+        | 'nextjs'
+        | 'typescript'
+        | 'python'
+        | 'node'
+        | 'postgresql'
+        | 'mongodb'
+        | 'redis'
+        | 'docker'
+        | 'kubernetes'
+        | 'pnpm'
+        | 'openai'
+        | 'gemini'
+        | 'qwen'
+        | 'supabase'
+        | 'aws'
+        | 'nginx'
+        | 'payloadcms'
+        | 'strapi'
+      )[]
+    | null;
+  /**
+   * Video o GIF para mostrar en hover (proyectos destacados)
+   */
+  preview_video?: (number | null) | Media;
+  /**
+   * Describe el problema de negocio/técnico que resuelve
+   */
+  challenge?: string | null;
+  /**
+   * Describe la arquitectura/solución final que diseñaste
+   */
+  solution?: string | null;
   knowledge_project?: (number | KnowledgeProject)[] | null;
+  related_posts?: (number | Post)[] | null;
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -473,13 +538,24 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
   description?: T;
-  github_repo?: T;
+  link_github?: T;
+  link_live_demo?: T;
   image_repo?: T;
   project_type?: T;
+  project_status?: T;
+  is_featured?: T;
+  tech_stack?: T;
+  preview_video?: T;
+  challenge?: T;
+  solution?: T;
   knowledge_project?: T;
+  related_posts?: T;
+  richText?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
