@@ -1,11 +1,9 @@
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
-
 import { Post, Media } from "@/payload-types";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Metadata } from 'next';
+import { getPosts } from "@/actions/get-posts";
 
 export const metadata: Metadata = {
   title: 'Blog & Insights',
@@ -41,19 +39,7 @@ export default async function BlogPage() {
   let posts: Post[] = [];
   
   try {
-    const payload = await getPayload({ config: configPromise });
-    const postsData = await payload.find({
-      collection: 'posts',
-      limit: 100,
-      depth: 1,
-      sort: '-createdAt',
-      where : {
-        _status : {
-          equals : "published"
-        }
-      }
-    });
-    posts = postsData.docs;
+    posts = await getPosts();
   } catch (error) {
     console.error("Error fetching posts:", error);
   }

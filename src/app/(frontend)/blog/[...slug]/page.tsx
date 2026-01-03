@@ -1,5 +1,4 @@
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
+import { getPostBySlug } from "@/actions/get-post";
 
 import { RichTextRender } from "@/components/RichTextRender";
 import { TableOfContents } from "@/components/TableOfContents";
@@ -17,13 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const slugString = slug.join('/');
   
-  const payload = await getPayload({ config: configPromise });
-  const post = await payload.find({
-    collection: 'posts',
-    where: { slug: { equals: slugString } , _status : {equals : "published"}},
-  });
-
-  const postData = post.docs[0] as Post;
+  const postData = await getPostBySlug(slugString, 1);
 
   if (!postData) {
     return {
@@ -43,18 +36,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     const slugString = slug.join('/');    
     console.log(`Buscando post con slug: "${slugString}"`); // Bueno para depurar
 
-    const payload = await getPayload({ config: configPromise });
-    const post = await payload.find({
-        collection : 'posts',
-        depth : 20,
-        limit : 1,
-        locale : undefined,
-        // 2. Usar el string unido en la consulta
-        where : { slug : { equals : slugString } }
-    });
-
-
-    const postPageData = post.docs[0];
+    const postPageData = await getPostBySlug(slugString, 20);
 
     // Es una buena práctica manejar el caso en que no se encuentre el post
     if (!postPageData) {

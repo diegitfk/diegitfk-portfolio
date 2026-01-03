@@ -1,5 +1,4 @@
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
+import { getProjectBySlug } from "@/actions/get-project";
 import { RichTextRender } from "@/components/RichTextRender";
 import { Project, Media, Post } from "@/payload-types";
 import { Metadata } from 'next';
@@ -63,13 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const slugString = slug.join('/');
   
-  const payload = await getPayload({ config: configPromise });
-  const project = await payload.find({
-    collection: 'projects',
-    where: { slug: { equals: slugString }, _status: { equals: "published" } },
-  });
-
-  const projectData = project.docs[0] as Project;
+  const projectData = await getProjectBySlug(slugString, 1);
 
   if (!projectData) {
     return { title: 'Proyecto no encontrado' };
@@ -85,15 +78,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const slugString = slug.join('/');
 
-  const payload = await getPayload({ config: configPromise });
-  const project = await payload.find({
-    collection: 'projects',
-    depth: 3,
-    limit: 1,
-    where: { slug: { equals: slugString } }
-  });
-
-  const projectData = project.docs[0] as Project;
+  const projectData = await getProjectBySlug(slugString, 3);
 
   if (!projectData) {
     return (

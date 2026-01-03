@@ -1,8 +1,7 @@
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
 import { Project } from "@/payload-types";
 import { Metadata } from 'next';
 import { ProjectsGrid } from "@/components/projects/projects-grid";
+import { getProjects } from "@/actions/get-projects";
 
 export const metadata: Metadata = {
   title: 'Projects | Engineering Dashboard',
@@ -26,19 +25,7 @@ export default async function ProjectsPage() {
   let projects: Project[] = [];
   
   try {
-    const payload = await getPayload({ config: configPromise });
-    const projectsData = await payload.find({
-      collection: 'projects',
-      limit: 100,
-      depth: 2,
-      sort: '-createdAt',
-      where: {
-        _status: {
-          equals: "published"
-        }
-      }
-    });
-    projects = projectsData.docs;
+    projects = await getProjects();
   } catch (error) {
     console.error("Error fetching projects:", error);
   }
