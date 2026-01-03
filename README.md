@@ -6,3 +6,4 @@
 - a5551cb: `Deploy` Resolucion de separacion SSR, SSC
 - 33ac7bb : `Deploy` configuración de conexión dinámica a base de datos y optimizar pool
 - 9762143: `Deploy` Implementación de Payload MCP Server para tools dinámica via payload para el agente
+- 541a874: `Deploy` Implementación de sección de proyectos y animaciones con useContext controladas
