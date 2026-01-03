@@ -5,6 +5,7 @@ import '../globals.css';
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { IntroProvider } from "@/providers/intro-provider"
+import { ChatProvider } from "@/providers/chat-provider"
 import { DynamicNavbar } from "@/components/layout/dynamic-navbar"
 import { ChatBot } from "@/components/chat/chat-bot"
 
@@ -44,18 +45,20 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
         <IntroProvider>
-          <DynamicNavbar 
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Proyectos", href: "/projects" },
-              { label: "Blog", href: "/blog" },
-            ]}
-            ctaLabel="Contacto"
-            ctaHref="/#contact"
-          />
-          {children}
-          <ChatBot />
-          <Toaster position="top-right" />
+          <ChatProvider>
+            <DynamicNavbar 
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Proyectos", href: "/projects" },
+                { label: "Blog", href: "/blog" },
+              ]}
+              ctaLabel="Contacto"
+              ctaHref="/#contact"
+            />
+            {children}
+            <ChatBot />
+            <Toaster position="top-right" />
+          </ChatProvider>
         </IntroProvider>
         </ThemeProvider>
       </body>

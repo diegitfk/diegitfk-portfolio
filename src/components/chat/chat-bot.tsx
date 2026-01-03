@@ -326,8 +326,10 @@ interface ChatBotProps {
   visible?: boolean;
 }
 
+import { useChatControl } from "@/providers/chat-provider";
+
 export function ChatBot({ visible = true }: ChatBotProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useChatControl();
 
   const { messages, sendMessage, status, stop } = useChat({
     transport: new DefaultChatTransport({

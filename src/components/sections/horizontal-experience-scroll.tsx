@@ -10,6 +10,8 @@ import { BackendExperienceCard } from "./backend-experience-card";
 import { MicroservicesArchitecture } from "./microservices-architecture";
 import { WorkflowAutomationArchitecture } from "./workflow-automation-architecture";
 import { BackendExperienceStack } from "./backend-experience-stack";
+import Link from "next/link";
+import { Shimmer } from "@/components/ai-elements/shimmer";
 
 // Registrar ScrollTrigger
 if (typeof window !== "undefined") {
@@ -81,10 +83,13 @@ export function HorizontalExperienceScroll({ sections }: HorizontalExperienceScr
   );
 }
 
+import { useChatControl } from "@/providers/chat-provider";
+
 // Componente separado para cada sección con animaciones useInView
 function SectionPanel({ section }: { section: ExperienceSectionData }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.4 });
+  const { toggleChat } = useChatControl();
 
   const textVariants = {
     hidden: { opacity: 0, x: -50 },
@@ -127,6 +132,30 @@ function SectionPanel({ section }: { section: ExperienceSectionData }) {
             <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
               {section.description}
             </p>
+            
+            <div className="mt-8 flex justify-center lg:justify-start">
+               {section.customComponent === "ai-chat" ? (
+                 <button 
+                   onClick={toggleChat}
+                   className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
+                 >
+                   <Shimmer className="text-sm font-medium tracking-wide [--color-background:#ffffff] [--color-muted-foreground:#9ca3af]">
+                     Vive La Experiencia
+                   </Shimmer>
+                   <span className="text-gray-400 group-hover:text-white transition-colors duration-300">→</span>
+                 </button>
+               ) : (
+                 <Link 
+                   href="/projects"
+                   className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                 >
+                   <Shimmer className="text-sm font-medium tracking-wide [--color-background:#ffffff] [--color-muted-foreground:#9ca3af]">
+                     Explorar todos los proyectos
+                   </Shimmer>
+                   <span className="text-gray-400 group-hover:text-white transition-colors duration-300">→</span>
+                 </Link>
+               )}
+            </div>
           </motion.div>
 
           <motion.div 

@@ -8,6 +8,9 @@ import { HorizontalExperienceScroll } from '@/components/sections/experience-sho
 import { ContactSection } from '@/components/sections/contact-section'
 
 
+import { FeaturedProjects } from '@/components/sections/featured-projects'
+import Timeline from '@/components/sections/Timeline'
+
 export function HomeContent() {
   const { hasIntroRun, setHasIntroRun, isLoaded } = useIntro()
 
@@ -82,6 +85,8 @@ export function HomeContent() {
               ]}
             />
           </AboutSection>
+          <FeaturedProjects />
+          <Timeline />
           <ContactSection />
 
         </>
