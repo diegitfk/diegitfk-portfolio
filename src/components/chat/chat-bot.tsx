@@ -20,6 +20,7 @@ import {
   ConversationScrollButton,
   ConversationEmptyState,
 } from "@/components/ai-elements/conversation";
+import { useIntro } from "@/providers/intro-provider";
 import {
   Message,
   MessageContent,
@@ -349,7 +350,9 @@ export function ChatBot({ visible = true }: ChatBotProps) {
 
   const isLoading = status === "streaming" || status === "submitted";
 
-  if (!visible) return null;
+  const { hasIntroRun } = useIntro();
+
+  if (!visible || !hasIntroRun) return null;
 
   return (
     <>

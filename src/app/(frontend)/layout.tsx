@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { IntroProvider } from "@/providers/intro-provider"
 import { DynamicNavbar } from "@/components/layout/dynamic-navbar"
+import { ChatBot } from "@/components/chat/chat-bot"
 
 export const metadata = {
   title: {
@@ -46,13 +47,14 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <DynamicNavbar 
             items={[
               { label: "Home", href: "/" },
-              { label: "Proyectos", href: "/#projects" },
+              { label: "Proyectos", href: "/projects" },
               { label: "Blog", href: "/blog" },
             ]}
             ctaLabel="Contacto"
             ctaHref="/#contact"
           />
           {children}
+          <ChatBot />
           <Toaster position="top-right" />
         </IntroProvider>
         </ThemeProvider>

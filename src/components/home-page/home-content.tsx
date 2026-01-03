@@ -6,7 +6,7 @@ import { HeroSection } from '@/components/sections/hero-section'
 import { AboutSection } from '@/components/sections/about-section'
 import { HorizontalExperienceScroll } from '@/components/sections/experience-showcase'
 import { ContactSection } from '@/components/sections/contact-section'
-import { ChatBot } from '@/components/chat/chat-bot'
+
 
 export function HomeContent() {
   const { hasIntroRun, setHasIntroRun, isLoaded } = useIntro()
@@ -83,7 +83,7 @@ export function HomeContent() {
             />
           </AboutSection>
           <ContactSection />
-          <ChatBot visible={hasIntroRun} />
+
         </>
       )}
     </>
