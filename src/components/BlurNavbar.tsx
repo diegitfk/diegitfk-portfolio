@@ -27,8 +27,8 @@ const defaultItems: NavItem[] = [
 export function BlurNavbar({
   logo,
   items = defaultItems,
-  ctaLabel = "Contacto",
-  ctaHref = "#contact",
+  ctaLabel,
+  ctaHref,
 }: BlurNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -89,16 +89,18 @@ export function BlurNavbar({
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href={ctaHref}
-                className={`text-sm font-medium transition-colors relative pb-1 ${
-                  isActive(ctaHref)
-                    ? "text-white border-b-2 border-white"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {ctaLabel}
-              </Link>
+              {ctaLabel && ctaHref && (
+                <Link
+                  href={ctaHref}
+                  className={`text-sm font-medium transition-colors relative pb-1 ${
+                    isActive(ctaHref)
+                      ? "text-white border-b-2 border-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {ctaLabel}
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -137,17 +139,19 @@ export function BlurNavbar({
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href={ctaHref}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`mt-4 px-8 py-3 text-base font-medium rounded-lg transition-colors ${
-                  isActive(ctaHref)
-                    ? "bg-white text-black border-b-2 border-white"
-                    : "bg-white text-black hover:bg-gray-200"
-                }`}
-              >
-                {ctaLabel}
-              </Link>
+              {ctaLabel && ctaHref && (
+                <Link
+                  href={ctaHref}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mt-4 px-8 py-3 text-base font-medium rounded-lg transition-colors ${
+                    isActive(ctaHref)
+                      ? "bg-white text-black border-b-2 border-white"
+                      : "bg-white text-black hover:bg-gray-200"
+                  }`}
+                >
+                  {ctaLabel}
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

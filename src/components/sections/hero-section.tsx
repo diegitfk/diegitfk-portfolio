@@ -57,7 +57,7 @@ export function HeroSection() {
                 <motion.div variants={itemVariants} className="mb-6">
                     <span className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-wider text-gray-400 border border-gray-700/50 rounded-full backdrop-blur-sm bg-black/30">
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        Available for work
+                        Disponible para trabajar
                     </span>
                 </motion.div>
 
@@ -74,7 +74,7 @@ export function HeroSection() {
                     variants={itemVariants}
                     className="text-lg sm:text-xl md:text-2xl text-gray-400 text-center mb-8 max-w-2xl"
                 >
-                    Full Stack Developer & AI Engineer
+                    Desarrollador Full Stack e Ingeniero de IA
                 </motion.p>
 
                 {/* Description */}
@@ -82,8 +82,8 @@ export function HeroSection() {
                     variants={itemVariants}
                     className="text-sm sm:text-base text-gray-500 text-center mb-12 max-w-xl leading-relaxed"
                 >
-                    Building scalable backend systems, modern frontends, and intelligent AI agents.
-                    Passionate about clean architecture and innovative solutions.
+                    Construyendo sistemas backend escalables, frontends modernos y agentes de IA inteligentes.
+                    Apasionado por la arquitectura limpia y las soluciones innovadoras.
                 </motion.p>
 
                 {/* Buttons */}
@@ -97,14 +97,14 @@ export function HeroSection() {
                         className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-200 transition-colors"
                     >
                         <Download size={18} />
-                        Download CV
+                        Descargar CV
                         <ArrowUpRight size={16} />
                     </a>
                     <a
                         href="#contact"
                         className="inline-flex items-center gap-2 px-6 py-3 border border-gray-700 text-white rounded-lg font-medium hover:bg-white/5 transition-colors"
                     >
-                        Get in touch
+                        Contáctame
                     </a>
                 </motion.div>
 
@@ -150,7 +150,7 @@ export function HeroSection() {
                     className="absolute bottom-8 left-1/2 -translate-x-1/2"
                 >
                     <div className="flex flex-col items-center gap-2 text-gray-500">
-                        <span className="text-xs uppercase tracking-wider">Scroll</span>
+                        <span className="text-xs uppercase tracking-wider">Desliza</span>
                         <div className="w-px h-8 bg-gradient-to-b from-gray-500 to-transparent" />
                     </div>
                 </motion.div>

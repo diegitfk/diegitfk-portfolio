@@ -52,8 +52,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
                 { label: "Proyectos", href: "/projects" },
                 { label: "Blog", href: "/blog" },
               ]}
-              ctaLabel="Contacto"
-              ctaHref="/#contact"
             />
             {children}
             <ChatBot />

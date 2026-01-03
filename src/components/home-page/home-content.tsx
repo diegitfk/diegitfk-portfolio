@@ -21,7 +21,7 @@ export function HomeContent() {
       {!hasIntroRun && (
         <div className="flex flex-col items-center justify-center">
           <PersonalPresentationAnimation 
-            words={["Hola, Aquí", "Diego Cancino"]} 
+            words={["Hola, soy", "Diego Cancino"]} 
             onComplete={() => setHasIntroRun(true)}
           />
         </div>
@@ -35,9 +35,9 @@ export function HomeContent() {
               sections={[
                 {
                   id: "frontend",
-                  title: "Frontend Experience",
-                  subtitle: "Expertise",
-                  description: "Creating responsive, accessible, and dynamic user interfaces using modern frameworks like React and Tailwind. Building pixel-perfect designs that deliver exceptional user experiences across all devices.",
+                  title: "Experiencia Frontend",
+                  subtitle: "Especialidad",
+                  description: "Creando interfaces de usuario responsivas, accesibles y dinámicas utilizando frameworks modernos como React y Tailwind. Construyendo diseños pixel-perfect que entregan experiencias de usuario excepcionales en todos los dispositivos.",
                   projects: [
                     {
                       id: 1,
@@ -70,16 +70,16 @@ export function HomeContent() {
                 },
                 {
                   id: "backend",
-                  title: "Backend Experience",
-                  subtitle: "Expertise",
-                  description: "Building robust and scalable server-side applications with Node.js, Python, and modern databases. Designing RESTful APIs and microservices architectures for high-performance systems.",
+                  title: "Experiencia Backend",
+                  subtitle: "Especialidad",
+                  description: "Construyendo aplicaciones del lado del servidor robustas y escalables con Node.js, Python y bases de datos modernas. Diseñando APIs RESTful y arquitecturas de microservicios para sistemas de alto rendimiento.",
                   customComponent: "backend-stack",
                 },
                 {
                   id: "ai",
-                  title: "AI Experience",
-                  subtitle: "Expertise",
-                  description: "Implementing machine learning models and AI-powered features. Working with LLMs, computer vision, and natural language processing to create intelligent applications.",
+                  title: "Experiencia en IA",
+                  subtitle: "Especialidad",
+                  description: "Especializado en la construcción de arquitecturas de agentes de IA y workflows agénticos. Domino el desarrollo Code-first (LangChain + LangGraph, Agno, Mastra) para lógica compleja, complementado con soluciones NoCode (Make.com, n8n) para orquestaciones ágiles. Integro estos sistemas en estrategias multi-canal y frontends modernos mediante protocolos AGUI y el AI SDK de Vercel.",
                   customComponent: "ai-chat",
                 },
               ]}

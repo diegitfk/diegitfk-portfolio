@@ -74,19 +74,19 @@ export function ContactSection() {
           {/* Left Column - Info */}
           <motion.div className="flex flex-col" variants={itemVariants}>
             <span className="inline-block px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-gray-400 border border-gray-700 rounded-full w-fit mb-8">
-              Get in touch
+              Contáctame
             </span>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              Let&apos;s build
+              Construyamos
               <br />
-              the <span className="text-gray-500">future.</span>
+              el <span className="text-gray-500">futuro.</span>
             </h2>
 
             <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 max-w-md">
-              I specialize in engineering robust backend systems and crafting
-              minimal, high-performance interfaces. Open for freelance and
-              consulting.
+              Me especializo en diseñar sistemas backend robustos y crear interfaces
+              minimalistas de alto rendimiento. Disponible para freelance y
+              consultoría.
             </p>
 
             {/* Contact Info */}
@@ -97,7 +97,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wider">
-                    Email
+                    Correo
                   </p>
                   <a
                     href="mailto:cancinod080@gmail.com"
@@ -114,7 +114,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wider">
-                    Based in
+                    Ubicado en
                   </p>
                   <p className="text-white text-sm">Chile</p>
                 </div>
@@ -123,7 +123,7 @@ export function ContactSection() {
 
             {/* Social Links */}
             <div>
-              <p className="text-sm text-gray-400 mb-4">Connect on Socials</p>
+              <p className="text-sm text-gray-400 mb-4">Conecta en redes sociales</p>
               <div className="flex gap-3">
                 <a
                   href="https://github.com/diegitfk"
@@ -167,7 +167,7 @@ export function ContactSection() {
                     htmlFor="name"
                     className="block text-xs text-gray-500 uppercase tracking-wider mb-2"
                   >
-                    Name
+                    Nombre
                   </label>
                   <input
                     type="text"
@@ -185,7 +185,7 @@ export function ContactSection() {
                     htmlFor="email"
                     className="block text-xs text-gray-500 uppercase tracking-wider mb-2"
                   >
-                    Email
+                    Correo
                   </label>
                   <input
                     type="email"
@@ -205,7 +205,7 @@ export function ContactSection() {
                   htmlFor="interest"
                   className="block text-xs text-gray-500 uppercase tracking-wider mb-2"
                 >
-                  Interest
+                  Interés
                 </label>
                 <div className="relative">
                   <select
@@ -216,19 +216,19 @@ export function ContactSection() {
                     className="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white text-sm appearance-none focus:outline-none focus:border-gray-500 transition-colors cursor-pointer"
                   >
                     <option value="Project Inquiry" className="bg-black">
-                      Project Inquiry
+                      Consulta de Proyecto
                     </option>
                     <option value="Freelance Work" className="bg-black">
-                      Freelance Work
+                      Trabajo Freelance
                     </option>
                     <option value="Consulting" className="bg-black">
-                      Consulting
+                      Consultoría
                     </option>
                     <option value="Job Opportunity" className="bg-black">
-                      Job Opportunity
+                      Oportunidad Laboral
                     </option>
                     <option value="Other" className="bg-black">
-                      Other
+                      Otro
                     </option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -254,14 +254,14 @@ export function ContactSection() {
                   htmlFor="message"
                   className="block text-xs text-gray-500 uppercase tracking-wider mb-2"
                 >
-                  Message
+                  Mensaje
                 </label>
                 <textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Tell me about your project..."
+                  placeholder="Cuéntame sobre tu proyecto..."
                   rows={5}
                   className="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-gray-500 transition-colors resize-none font-mono"
                   required
@@ -270,14 +270,14 @@ export function ContactSection() {
 
               <div className="flex items-center justify-between pt-2">
                 <p className="text-xs text-gray-500">
-                  I usually respond within 24 hours.
+                  Suelo responder dentro de 24 horas.
                 </p>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
                   <ArrowUpRight size={16} />
                 </button>
               </div>
@@ -289,7 +289,7 @@ export function ContactSection() {
       {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 py-6 border-t border-gray-800">
         <p className="text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Diego Cancino. All rights reserved.
+          © {new Date().getFullYear()} Diego Cancino. Todos los derechos reservados.
         </p>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { getProjectBySlug } from "@/actions/get-project";
 import { RichTextRender } from "@/components/RichTextRender";
-import { Project, Media, Post } from "@/payload-types";
+import { Media, Post } from "@/payload-types";
 import { Metadata } from 'next';
 import Image from "next/image";
 import Link from "next/link";

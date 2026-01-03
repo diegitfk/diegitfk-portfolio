@@ -4,7 +4,7 @@ import { RichTextRender } from "@/components/RichTextRender";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BlogHeader } from "@/components/BlogHeader";
 import { extractHeadings } from "@/lib/headingUtils";
-import { Media, Post } from "@/payload-types";
+import { Media } from "@/payload-types";
 import { Metadata } from 'next';
 
 // Helper to check if preview-image is a Media object

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo, useMemo, useCallback, useDeferredValue, useEffect } from "react";
+import { memo, useMemo, useCallback, useDeferredValue, useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage, ChatStatus } from "ai";

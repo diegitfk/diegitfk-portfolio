@@ -72,8 +72,8 @@ const TimelineItem = ({ event, index }: { event: TimelineEvent; index: number })
       <div className="hidden md:block w-5/12" />
 
       {/* Axis Point (The Dot) */}
-      {/* Mobile: Left aligned at 1.5rem (left-6). Desktop: Centered (left-1/2) */}
-      <div className="absolute left-6 md:left-1/2 transform -translate-x-1/2 md:-translate-x-1/2 flex items-center justify-center w-8 h-8 z-10">
+      {/* Mobile: Left aligned at 2.5rem (left-10). Desktop: Centered (left-1/2) */}
+      <div className="absolute left-10 md:left-1/2 transform -translate-x-1/2 md:-translate-x-1/2 flex items-center justify-center w-8 h-8 z-10">
         <div className="w-3 h-3 bg-white rounded-full relative">
           <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-75 duration-1000"></div>
           <div className="relative w-full h-full bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
@@ -147,23 +147,35 @@ export default function Timeline() {
 
   return (
     <section className="bg-black py-24 md:py-32 overflow-hidden relative">
-      <div className="container mx-auto px-4 relative max-w-6xl" ref={containerRef}>
-        
-        {/* Vertical Line Container */}
-        <div className="absolute left-10 md:left-1/2 transform -translate-x-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[1px] z-0">
-          {/* Static Background Line */}
-          <div className="absolute inset-0 bg-gray-800/50" />
-          {/* Animated Foreground Line */}
-          <motion.div 
-            style={{ scaleY, originY: 0 }}
-            className="absolute inset-0 bg-white"
-          />
-        </div>
+      <div className="container mx-auto px-4 relative max-w-7xl">
+         <div className="mb-20 md:mb-32">
+            <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
+              Experience Journey
+            </h2>
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl font-light">
+              Un recorrido por mi evolución profesional, cada hito representa un nuevo desafío técnico y un paso adelante en mi carrera como desarrollador.
+            </p>
+         </div>
 
-        <div className="relative flex flex-col space-y-16 md:space-y-24 z-10">
-          {events.map((event, index) => (
-            <TimelineItem key={index} event={event} index={index} />
-          ))}
+        {/* Timeline Wrapper */}
+        <div className="relative" ref={containerRef}>
+          {/* Vertical Line Container */}
+          {/* Start line a bit earlier (-top-12) */}
+          <div className="absolute left-10 md:left-1/2 transform -translate-x-1/2 md:-translate-x-1/2 -top-12 bottom-0 w-[1px] z-0">
+            {/* Static Background Line */}
+            <div className="absolute inset-0 bg-gray-800/50" />
+            {/* Animated Foreground Line */}
+            <motion.div 
+              style={{ scaleY, originY: 0 }}
+              className="absolute inset-0 bg-white"
+            />
+          </div>
+
+          <div className="relative flex flex-col space-y-16 md:space-y-24 z-10">
+            {events.map((event, index) => (
+              <TimelineItem key={index} event={event} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
