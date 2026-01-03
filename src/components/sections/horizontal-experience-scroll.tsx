@@ -40,9 +40,16 @@ export function HorizontalExperienceScroll({ sections }: HorizontalExperienceScr
 
     const container = containerRef.current;
     const scrollContainer = scrollContainerRef.current;
-    const totalWidth = scrollContainer.scrollWidth - window.innerWidth;
+    
+    // Use matchMedia for responsive animations/layout
+    const mm = gsap.matchMedia();
 
-    const ctx = gsap.context(() => {
+    mm.add("(min-width: 1024px)", () => {
+      // Desktop: Set width and enable horizontal scroll
+      gsap.set(scrollContainer, { width: sections.length * 100 + "vw" });
+      
+      const totalWidth = scrollContainer.scrollWidth - window.innerWidth;
+
       gsap.to(scrollContainer, {
         x: -totalWidth,
         ease: "none",
@@ -56,9 +63,9 @@ export function HorizontalExperienceScroll({ sections }: HorizontalExperienceScr
           invalidateOnRefresh: true,
         },
       });
-    }, container);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, [sections]);
 
   return (
@@ -72,8 +79,7 @@ export function HorizontalExperienceScroll({ sections }: HorizontalExperienceScr
       />
       <div
         ref={scrollContainerRef}
-        className="flex"
-        style={{ width: `${sections.length * 100}vw` }}
+        className="flex flex-col lg:flex-row"
       >
         {sections.map((section) => (
           <SectionPanel key={section.id} section={section} />
@@ -113,7 +119,7 @@ function SectionPanel({ section }: { section: ExperienceSectionData }) {
   return (
     <div
       ref={sectionRef}
-      className="w-screen h-screen flex-shrink-0 flex items-center"
+      className="w-full lg:w-screen py-12 lg:py-0 lg:h-screen flex-shrink-0 flex items-center"
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
