@@ -120,11 +120,11 @@ export function AboutSection({ children }: AboutSectionProps) {
             </div>
             <div className="flex gap-12">
               <div>
-                <p className="text-4xl font-bold">5+</p>
+                <p className="text-4xl font-bold">3+</p>
                 <p className="text-gray-500 text-sm">AÑOS EXP.</p>
               </div>
               <div>
-                <p className="text-4xl font-bold">20+</p>
+                <p className="text-4xl font-bold">5+</p>
                 <p className="text-gray-500 text-sm">PROYECTOS</p>
               </div>
               <div>
