@@ -10,6 +10,7 @@ import { BackendExperienceCard } from "./backend-experience-card";
 import { MicroservicesArchitecture } from "./microservices-architecture";
 import { WorkflowAutomationArchitecture } from "./workflow-automation-architecture";
 import { BackendExperienceStack } from "./backend-experience-stack";
+import { GoogleAdsCard } from "./google-ads-card";
 import Link from "next/link";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 
@@ -24,7 +25,7 @@ export interface ExperienceSectionData {
   subtitle: string;
   description: string;
   projects?: import("./stacked-project-cards").ProjectCardData[];
-  customComponent?: "ai-chat" | "microservices-architecture" | "workflow-automation" | "backend-stack";
+  customComponent?: "ai-chat" | "microservices-architecture" | "workflow-automation" | "backend-stack" | "google-ads";
 }
 
 export interface HorizontalExperienceScrollProps {
@@ -182,6 +183,8 @@ function SectionPanel({ section }: { section: ExperienceSectionData }) {
               </BackendExperienceCard>
             ) : section.customComponent === "backend-stack" ? (
               <BackendExperienceStack />
+            ) : section.customComponent === "google-ads" ? (
+              <GoogleAdsCard />
             ) : section.projects ? (
               <StackedProjectCards projects={section.projects} />
             ) : null}

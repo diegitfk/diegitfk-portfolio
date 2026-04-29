@@ -102,6 +102,9 @@ export function AboutSection({ children }: AboutSectionProps) {
               en productos digitales fluidos. No solo escribo código; ingeniero soluciones. Ya sea optimizando una
               consulta de base de datos en un 50% o diseñando un agente de IA que reduce la
               carga de trabajo manual en 10 horas a la semana, me enfoco en el impacto tangible en el negocio.
+              También asesoro en estrategias de Google Ads: mantenimiento de campañas Search y Display,
+              optimización de Quality Score vía SEO On-Page en landing pages, y configuración de
+              procesos OCT (Offline Conversion Tracking) para una atribución precisa de cada conversión.
               <br/>
               <span className="block mt-4 text-white font-medium">
                   ¿Quieres saber como lo hago?, visita mi blog.

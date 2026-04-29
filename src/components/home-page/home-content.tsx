@@ -82,6 +82,13 @@ export function HomeContent() {
                   description: "Especializado en la construcción de arquitecturas de agentes de IA y workflows agénticos. Domino el desarrollo Code-first (LangChain + LangGraph, Agno, Mastra) para lógica compleja, complementado con soluciones NoCode (Make.com, n8n) para orquestaciones ágiles. Integro estos sistemas en estrategias multi-canal y frontends modernos mediante protocolos AGUI y el AI SDK de Vercel.",
                   customComponent: "ai-chat",
                 },
+                {
+                  id: "google-ads",
+                  title: "Google Ads & SEO",
+                  subtitle: "Especialidad",
+                  description: "Asesor en Google Ads especializado en administración de campañas Search y Display, diseño de embudos de ventas orientados a conversión, y optimización de Quality Score mediante SEO On-Page en landing pages. También asesoro la configuración de procesos OCT (Offline Conversion Tracking) para que cada peso invertido se atribuya correctamente.",
+                  customComponent: "google-ads",
+                },
               ]}
             />
           </AboutSection>
