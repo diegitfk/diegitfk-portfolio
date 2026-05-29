@@ -56,9 +56,9 @@ const agentConfig = {
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
     model: {
-      id: 'nvidia/qwen/qwen3-next-80b-a3b-thinking' as const,
-      url: 'https://integrate.api.nvidia.com/v1',
-      apiKey: process.env.NVIDIA_API_KEY || '',
+      url : "https://opencode.ai/zen/go/v1",
+      id : "opencode-go/deepseek-v4-flash",
+      apiKey : process.env.NVIDIA_API_KEY,
     },
 } as const;
 
