@@ -107,20 +107,9 @@
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.3"
   },
+  "packageManager": "pnpm@11.11.0",
   "engines": {
     "node": ">=18",
     "pnpm": "^9 || ^10 || ^11"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "esbuild",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@types/react": "19.2.7",
-      "@types/react-dom": "19.2.3",
-      "@modelcontextprotocol/sdk": "1.22.0"
-    }
   }
 }

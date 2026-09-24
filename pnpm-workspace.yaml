@@ -1,6 +1,9 @@
-allowBuilds:
-  '@parcel/watcher': false
-  '@tailwindcss/oxide': false
-  esbuild: false
-  sharp: false
-  unrs-resolver: false
+onlyBuiltDependencies:
+  - sharp
+  - esbuild
+  - unrs-resolver
+
+overrides:
+  '@types/react': '19.2.7'
+  '@types/react-dom': '19.2.3'
+  '@modelcontextprotocol/sdk': '1.22.0'
