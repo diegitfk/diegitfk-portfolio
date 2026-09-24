@@ -30,7 +30,7 @@ const dirname = path.dirname(filename)
 
 const DATABASE_URI = process.env.NODE_ENV === 'production'
   ? process.env.DATABASE_URI_POOL || process.env.DATABASE_URI_DIRECT
-  : process.env.DATABASE_URI_DIRECT;
+  : process.env.DATABASE_URI_DIRECT || process.env.DATABASE_URI_POOL;
 
 export default buildConfig({
   admin: {

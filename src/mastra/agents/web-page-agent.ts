@@ -56,8 +56,8 @@ const agentConfig = {
       Ayudar a los visitantes a entender tu trabajo, responder preguntas técnicas de forma concisa, y crear una experiencia positiva que refleje tu pasión por el desarrollo web.
     `,
     model: {
-      url : "https://opencode.ai/zen/go/v1",
-      id : "opencode-go/deepseek-v4-flash",
+      url : "https://integrate.api.nvidia.com/v1",
+      id : "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
       apiKey : process.env.NVIDIA_API_KEY,
     },
 } as const;
